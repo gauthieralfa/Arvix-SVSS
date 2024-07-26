@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PartitionActivity">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:textColor="#000"
+            android:layout_marginRight="10dp"
+            android:text="@string/tempo"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/background_spinner"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/activity_partition_tempo_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="12dp"
+                android:spinnerMode="dropdown" ></Spinner>
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="@string/instruments"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_spinner"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/activity_partition_instrument_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="12dp"
+                android:spinnerMode="dropdown" ></Spinner>
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:padding="5dp"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="@string/nb_mesures"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_spinner"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/activity_partition_nb_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="12dp"
+                android:spinnerMode="dropdown" ></Spinner>
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_partition_valid_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginVertical="10dp"
+        android:layout_gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:background="@drawable/background_btn_red"
+        android:text="@string/valid"/>
+
+    <Button
+        android:id="@+id/activity_partition_genere_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"
+        android:text="@string/genere_music_label"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_partition_list_mesure">
+
+    </ListView>
+
+
+</LinearLayout>

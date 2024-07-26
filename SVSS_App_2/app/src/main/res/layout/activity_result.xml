@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context=".ResultActivity">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/activity_result_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:text="test"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/activity_result_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="40dp"
+            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:text="test"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/activity_result_text3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="test"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/activity_result_text4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="40dp"
+            android:gravity="center"
+            android:text="test"
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/activity_result_home_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:text="@string/genere_new" />
+
+    </LinearLayout>
+
+</LinearLayout>

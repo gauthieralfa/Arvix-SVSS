@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="#444"
+        android:paddingTop="8dp"
+        android:paddingBottom="5dp"
+        android:text="@string/explore_file"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:paddingBottom="10dp"
+        android:text="@string/search_explain"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#cacaca"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#fff"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#eee"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:text="@string/gamme"/>
+
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:text="@string/tempo"/>
+
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:text="@string/instruments"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#eee"
+        android:paddingTop="5dp"
+        android:weightSum="30"
+        android:paddingBottom="10dp">
+
+        <Spinner
+            android:id="@+id/activity_open_gamme_spn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/background_spinner_open"
+            android:layout_weight="10">
+
+        </Spinner>
+
+        <Spinner
+            android:id="@+id/activity_open_tempo_min_spn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/background_spinner_open"
+            android:layout_weight="5">
+
+        </Spinner>
+
+        <Spinner
+            android:id="@+id/activity_open_tempo_max_spn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/background_spinner_open"
+            android:layout_weight="5">
+
+        </Spinner>
+
+        <Spinner
+            android:id="@+id/activity_open_instruments_spn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/background_spinner_open"
+            android:layout_weight="10">
+
+        </Spinner>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#cacaca"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#fff"/>
+
+    <Button
+        android:id="@+id/activity_open_valid_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"
+        android:text="@string/valid"/>
+
+
+    <TextView
+        android:id="@+id/activity_open_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:text="@string/no_result"
+        />
+
+
+    <ListView
+        android:id="@+id/activity_open_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        />
+
+</LinearLayout>

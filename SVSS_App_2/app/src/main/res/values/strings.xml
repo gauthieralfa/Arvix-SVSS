@@ -1,0 +1,49 @@
+﻿<resources>
+    <string name="app_name">ImprOmega</string>
+
+    <!-- Main Activity -->
+
+    <string name="genere_how">Choose what you want to do...</string>
+    <string name="register">Phase 2</string>
+    <string name="receive_keys">Phase 3 Owner</string>
+    <string name="reserve">Phase 1 - Send Booking Details to the Service Provider</string>
+    <string name="open_car">Open the Car</string>
+    <string name="Reserve">Sending Booking Details to the Service Provider</string>
+    <string name="Register">Phase 2</string>
+    <string name="valid">Valid</string>
+    <string name="accept">Accept/Decline a Booking</string>
+    <string name="ID_BD_text">Wait</string>
+
+    <!-- Player Activity -->
+
+    <string name="test">Test</string>
+    <string name="save">Book a car</string>
+    <string name="edit">Modifier</string>
+    <string name="genere_new">Revenir à la page d\'accueil</string>
+
+    <!-- Open Activity -->
+
+    <string name="explore_file">Explorateur d\'accompagnements</string>
+    <string name="search_explain">Choisissez la gamme, un tempo minimal et maximal et un instrument pour filtrer la recherche.</string>
+    <string name="no_result">Aucun résultat trouvé</string>
+
+    <!-- Partition Activity -->
+
+    <string name="genere_music_label">Générer l\'accompagnement</string>
+    <string name="nb_mesures">Combien de mesures écrire ?</string>
+
+    <!-- Record activity -->
+
+    <string name="tempo">Tempo (bpm) :</string>
+    <string name="Name">This is a TEST</string>
+    <string name="gamme">Name :</string>
+    <string name="instruments">Instruments :</string>
+    <string name="record_label">Start Recording</string>
+    <string name="record_start">Commencer l\'enregistrement</string>
+    <string name="record_stop">Arreter l\'enregistrement</string>
+    <string name="name">name</string>
+    <string name="phase_a4_1">Launch Phase A4.1</string>
+    <string name="open_the_car">Open The Car</string>
+    <string name="open_the_car_phase_a5">open_the_car - Phase A5</string>
+
+</resources>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleDialog"
+        android:text="Texte par défaut"
+        android:textSize="25dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/background_spinner"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/activity_partition_choix_case"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:padding="16dp"
+            android:spinnerMode="dropdown"></Spinner>
+
+
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@mipmap/drop_down" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/background_spinner"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/activity_partition_choix_temps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:padding="16dp"
+            android:spinnerMode="dropdown"></Spinner>
+
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@mipmap/drop_down" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/validerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valider"
+            />
+
+        <Button
+            android:id="@+id/annulerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Annuler"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

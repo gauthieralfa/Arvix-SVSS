@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="77dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="0dp"
+            android:text="@string/Name"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-80dp"
+            android:layout_marginTop="40dp"
+            android:hint="@string/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.184"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="DuplicateIds" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="0dp"
+            android:text="Location: "
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/background_spinner"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/activity_parameters_style_music_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="16dp"
+                android:spinnerMode="dropdown"></Spinner>
+
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="0dp"
+            android:text="Car: "
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/background_spinner"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/activity_parameters_instrument_spn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="16dp"
+                android:spinnerMode="dropdown" ></Spinner>
+
+            <ImageView
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:src="@mipmap/drop_down" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/background_spinner"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/choose_timestart_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/colorPrimary"
+                android:paddingVertical="10dp"
+                android:text="SET Start Date and Time"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="60dp"
+                android:text="Time set : 11-June-2021-02:50:45"
+                android:textSize="10sp" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/background_spinner"
+            android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/choose_timeend_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorPrimary"
+            android:paddingVertical="10dp"
+            android:text="SET Stop Date and Time"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="60dp"
+            android:text="Time set : 10-June-2021-23:50:45"
+            android:textSize="10sp" />
+
+
+    </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/activity_parameters_valid_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorPrimary"
+        android:paddingVertical="25dp"
+        android:text="@string/Register"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+</LinearLayout>

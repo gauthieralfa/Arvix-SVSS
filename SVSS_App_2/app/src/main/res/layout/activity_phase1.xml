@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".phase1Activity">
+
+    <include layout="@layout/toolbar_layout" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="7dp"
+            android:textSize="20sp"
+            android:text="ID_BD: "/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-30dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_ID_BD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="7dp"
+                android:text=""
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="7dp"
+        android:text="ID_Uo: "
+        android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-30dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_ID_Uo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="7dp"
+                android:text="TEST"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="7dp"
+            android:textSize="20sp"
+            android:text="ID_uc: "/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-30dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_ID_uc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="7dp"
+                android:text="TEST"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="7dp"
+            android:textSize="20sp"
+            android:text="ID_veh_o:"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-30dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_ID_veh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="7dp"
+                android:text="TEST"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/activity_parameters_valid_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorPrimary"
+        android:paddingVertical="25dp"
+        android:text="@string/Reserve"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+</LinearLayout>

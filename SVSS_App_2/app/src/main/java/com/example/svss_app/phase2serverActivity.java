@@ -25,7 +25,9 @@ public class phase2serverActivity implements Runnable {
 
     String ServerAdress;
     Socket socket;
-    PrintWriter out;
+    //PrintWriter out;
+    DataOutputStream out;
+    DataInputStream in;
     long startActivity;
     Boolean go = false;
 
@@ -54,80 +56,33 @@ public class phase2serverActivity implements Runnable {
         }
 
         Crypto crypto=new Crypto();
-        DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-        out=new PrintWriter(socket.getOutputStream());//Gestion du flux sortant
-        out.print("updated_step");
+
+        out = new DataOutputStream(socket.getOutputStream());
+        in = new DataInputStream((socket.getInputStream()));
+        out.writeUTF("updated_step");
         out.flush();
         System.out.println("updated_step_sent");
-
-        String msg=(String)in.readUTF();
-        System.out.println("Received from the server :"+msg);
-
-        out.print("OK");
+        // Sending Session Number
+        out.writeInt(Variables.num_session);
+        System.out.println("Num Session sent is: "+Variables.num_session);
         out.flush();
 
-        InputStream sin = socket.getInputStream();
-        byte[] size_buff = new byte[4];
-        sin.read(size_buff);
+        // UNTILL here, IT WORKS WELL.
 
-        int size = ByteBuffer.wrap(size_buff).asIntBuffer().get();
-        System.out.println("size received: "+ size);
-
-        out.print("OK");
-        out.flush();
-
-        byte[] Sigma_AT_SUB_ACK = new byte[0];
-        if(size>0) {
-            Sigma_AT_SUB_ACK = new byte[size];
-            in.readFully(Sigma_AT_SUB_ACK, 0, Sigma_AT_SUB_ACK.length); // read the message
-        }
-        String Sigma_AT_SUB_ACK64=new String(Sigma_AT_SUB_ACK);
-        System.out.println("Server received Sigma_AT_SUB_ACK: "+Sigma_AT_SUB_ACK64);
-
-
-        out.print("OK");
-        out.flush();
-
-
+        //FONCTION BEING CREATED
+        byte[] Sigma_AT_SUB_ACK=receiveByte(in);
+        String Sigma_AT_SUB_ACK_str=new String(Sigma_AT_SUB_ACK);
+        String Sigma_AT_SUB_ACK644 = Base64.getEncoder().encodeToString(Sigma_AT_SUB_ACK);
+        System.out.println("Server received Sigma_AT_SUB_ACK: "+Sigma_AT_SUB_ACK644);
 //h_BD_uc_uo Received
-
-        sin.read(size_buff);
-        size = ByteBuffer.wrap(size_buff).asIntBuffer().get();
-        System.out.println("size received: "+ size);
-
-        out.print("OK");
-        out.flush();
-
-        byte[] h_BD_uc_uo = new byte[0];
-        if(size>0) {
-            h_BD_uc_uo = new byte[size];
-            in.readFully(h_BD_uc_uo, 0, h_BD_uc_uo.length); // read the message
-        }
+        byte[] h_BD_uc_uo=receiveByte(in);
         String h_BD_uc_uo64=new String(h_BD_uc_uo);
 
-        String Sigma_AT_SUB_ACK644 = Base64.getEncoder().encodeToString(Sigma_AT_SUB_ACK);
         System.out.println("Server received h_BD_uc_uo: "+h_BD_uc_uo64);
+        byte[] ID_BD_ID_AT=receiveByte(in);
 
-
-        out.print("OK");
-        out.flush();
-
-
-//ID_BD_ID_AT Received
-
-        sin.read(size_buff);
-        size = ByteBuffer.wrap(size_buff).asIntBuffer().get();
-        System.out.println("taille reçue: "+ size);
-
-        out.print("OK");
-        out.flush();
-
-        byte[] ID_BD_ID_AT = new byte[0];
-        if(size>0) {
-            ID_BD_ID_AT = new byte[size];
-            in.readFully(ID_BD_ID_AT, 0, ID_BD_ID_AT.length); // read the message
-        }
         String ID_BD_ID_AT_str=new String(ID_BD_ID_AT);
+
         System.out.println("Server received ID_BD_ID_AT_str: "+ID_BD_ID_AT_str);
         String[] lines = ID_BD_ID_AT_str.split("\n", -1);
         String ID_BD=lines[0];
@@ -135,12 +90,10 @@ public class phase2serverActivity implements Runnable {
 
         // CHECK Signature
         PublicKey pub_key = null;
-        PrivateKey pri_key=null;
         boolean verif = Boolean.parseBoolean(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
                 pub_key=crypto.get_public_key("pub_car");
-                pri_key=crypto.get_private_key("priv_customer");
                 verif=crypto.verify(ID_BD+ID_AT+h_BD_uc_uo64,Sigma_AT_SUB_ACK644,pub_key);
                 if (verif==true){
                     System.out.println("Signature Sigma_AT_SUB_ACK OK!\n" );
@@ -154,7 +107,12 @@ public class phase2serverActivity implements Runnable {
             }
             long endTime = System.currentTimeMillis();
             long timeActivity=endTime - startActivity;
-            System.out.println("\nTotal execution time PHASE 2: " + timeActivity);
+            System.out.println("\nTotal execution time PHASE 2: " + timeActivity +" ms");
+            int time_int=(int)timeActivity;
+            System.out.println("\nTotal execution INT: " + time_int +" ms");
+            out.writeInt(time_int);
+            out.flush();
+
         }
     }
 
@@ -170,6 +128,14 @@ public class phase2serverActivity implements Runnable {
         }
     }
 
+
+
+    public static byte[] receiveByte(DataInputStream in) throws IOException {
+        int length=in.readInt();
+        byte[] data=new byte[length];
+        in.readFully(data);
+        return data;
+    }
 
     public static String receive_base64_python(InputStream sin, DataInputStream in,PrintWriter out){
         byte[] size_buff = new byte[1024];

@@ -106,7 +106,7 @@ public class OpenCar extends AsyncTask<Void, Void, Void> {
         try {
             pri_key = Crypto.get_private_key("priv_customer");
             pub_key=crypto.get_public_key("pub_customer");
-            Sigma_Uc = Crypto.sign(challenge_uc_string, pri_key);
+            Sigma_Uc = Crypto.sign(challenge_uc_string+"\n"+ID_UC, pri_key);
         } catch (Exception e) {
             e.printStackTrace();
         }

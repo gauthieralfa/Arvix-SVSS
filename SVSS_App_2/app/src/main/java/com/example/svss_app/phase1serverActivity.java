@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,13 +30,15 @@ public class phase1serverActivity implements Runnable {
     String ServerAdress;
     String BAvail;
     Socket socket;
-    BufferedReader in;
-    PrintWriter out;
+    DataOutputStream out;
+    DataInputStream in;
+    int port;
 
-    public phase1serverActivity(String s, String BD_uo_uc, long startactivity) throws IOException {
+    public phase1serverActivity(String s, String BD_uo_uc, long startactivity,int port) throws IOException {
         this.ServerAdress = s;
         this.BD_uo_uc = BD_uo_uc;
         this.startactivity=startactivity;
+        this.port=port;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -44,7 +47,7 @@ public class phase1serverActivity implements Runnable {
             System.out.println("Connection in process...");
             Log.v("TEST", "Communication started !");
             try {
-                socket = new Socket(ServerAdress, Variables.port);
+                socket = new Socket(this.ServerAdress, port);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -53,29 +56,23 @@ public class phase1serverActivity implements Runnable {
             e.printStackTrace();
         }
 
-        out = new PrintWriter(socket.getOutputStream());//Gestion du flux sortant
-        out.print("reservation");
-        System.out.println("---RESERVATION STEP---");
+        out = new DataOutputStream(socket.getOutputStream());
+        in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+        out.writeUTF("reservation");
+        System.out.println("---RESERVATION STEP---"+port);
         out.flush();
-
-        DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-        String msg = (String) in.readUTF();
-        System.out.println("Received from the server: " + msg);
-
-        out.print(BD_uo_uc);
+        out.writeInt(socket.getLocalPort());
         out.flush();
-        System.out.println("BD_uc_uo SENT:\n" + BD_uo_uc);
-
-        String msg2 = (String) in.readUTF();
-        System.out.println("Received from the server : " + msg2);
-        System.out.println("----- BD_uc_uo SENT to the Service Provider ----");
-
+        System.out.println(port+"Session Number SENT:\n" + socket.getLocalPort());
+        out.writeUTF(BD_uo_uc);
+        out.flush();
+        System.out.println(port+"BD_uc_uo SENT:\n" + BD_uo_uc);
+        System.out.println(port+"----- BD_uc_uo SENT to the Service Provider ----");
         long endTime = System.currentTimeMillis();
-        System.out.println("start time is: "+startactivity);
-        System.out.println("end time is: "+endTime);
-
         long timeActivity=endTime - startactivity;
-        System.out.println("\nTotal execution time OPEN CAR ACTIVITY: " + timeActivity);
+        System.out.println("\n+"+port+"Total execution time OPEN CAR ACTIVITY: " + timeActivity);
+        Variables.num_session= socket.getLocalPort();
+        System.out.println("\n+"+"LOCAL PORT IS: " + Variables.num_session);
 
     }
 

@@ -24,7 +24,8 @@ from Crypto.Random import get_random_bytes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 50020  # Port to listen on (non-privileged ports are > 1023)
+num_ports = 1
+PORTS = [60000 + i for i in range(0, 0 + num_ports)]  # Port to listen on (non-privileged ports are > 1023)
 server_reference_path = "car1/"
 
 '''
@@ -155,26 +156,39 @@ def decrypted_aead(key,ciphered,auth_data):
 
 class server(object):
 
-    def __init__(self, hostname, port):
+    def __init__(self, hostname, ports):
         self.hostname = hostname
-        self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind((self.hostname, self.port))
-        self.socket.listen()
-        print("Car ready at port 50001")
+        self.ports = ports
+        self.sockets = []
+        for port in ports:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            print("port :"+str(port))
+            self.socket.bind((self.hostname, port))
+            self.socket.listen()
+            print("Car ready at port "+str(port))
+            self.sockets.append(self.socket)
+
+            # Start a thread to handle incoming connections on this socket
+            thread = threading.Thread(target=self.accept_connections, args=(self.socket,port))
+            thread.start()
+
+    def accept_connections(self,socket,port_dst):
         while True:
-            clientsocket, (ip,port) = self.socket.accept()
-            newthread = ClientThread(ip ,port , clientsocket,self)
+            clientsocket, (ip,port) = socket.accept()
+            newthread = ClientThread(ip ,port , clientsocket,port_dst)
             newthread.start()
 
 
 class ClientThread(threading.Thread):
 
-    def __init__(self, ip, port, clientsocket,server):
+    def __init__(self, ip, port, clientsocket,port_dst):
 
         print("connection from",ip)
+        print("connection from port",port)
         self.ip = ip
+        self.dst_port=port_dst
+        print("connection on port (dst port)"+str(port_dst))
         self.port = port
         self.clientsocket = clientsocket
         self.server = server
@@ -233,6 +247,9 @@ class ClientThread(threading.Thread):
 
     def AT_Contract(self):
         print("AT_Contract_Function")
+        num_session = self.receive()
+        self.send_text("OK")
+
         C_AT = self.receive()
         print(C_AT)
         self.send_text("OK")
@@ -272,11 +289,15 @@ class ClientThread(threading.Thread):
         
 
         sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock2.connect(('127.0.0.1',50010))
-
-
+        port=self.dst_port-10000
+        print("port dst to the reply car is "+str(port))
+        sock2.connect(('127.0.0.1',port))
         sock2.send("step_A4".encode())
         ACK=sock2.recv(1024)
+
+        sock2.send(num_session)
+        ACK=sock2.recv(1024)
+
         sock2.send(Sigma_AT_SUB_ACK)
         ACK=sock2.recv(1024)
         sock2.send(h_BD_uc_uo.encode())
@@ -323,4 +344,4 @@ class ClientThread(threading.Thread):
 private_key_sp,public_key, private_key_sp_pem=generate_keys() #Generation of the keys
 private_key_car,public_key, private_key_car_pem=generate_keys_car() #Generation of the keys
  #SEVER IS NOW READY
-server(HOST,PORT)
+server(HOST,PORTS)

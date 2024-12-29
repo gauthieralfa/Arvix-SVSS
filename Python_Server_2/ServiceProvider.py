@@ -22,16 +22,14 @@ import hmac
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography import x509
 import time
+import csv
 
 
+dict={}
 
-BD_uc_uo=b''
-Sigma_AT_SUB_REQ=b''
-C_AT=b''
-Nonce_SesKVeh=b''
-
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 50010    # Port to listen on (non-privileged ports are > 1023)
+HOST = '127.0.0.1'  # Standard loopback interface address (localhost)ID
+num_ports = 1
+PORTS = [50000 + i for i in range(0, 0 + num_ports)]  # Port to listen on (non-privileged ports are > 1023)
 server_reference_path = "keys/"
 
 def generate_keys_car():
@@ -147,29 +145,51 @@ def decrypted_aead(key,ciphered,auth_data):
 
 class server(object):
 
-    def __init__(self, hostname, port):
+    def __init__(self, hostname, ports):
         self.hostname = hostname
-        self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind((self.hostname, self.port))
-        self.socket.listen()
-        print("Service provider ready")
+        self.ports = ports
+        self.sockets = []
+        for port in ports:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            print("port :"+str(port))
+            self.socket.bind((self.hostname, port))
+            self.socket.listen()
+            print("Service provider ready")
+            self.sockets.append(self.socket)
+
+            # Start a thread to handle incoming connections on this socket
+            thread = threading.Thread(target=self.accept_connections, args=(self.socket,port))
+            # Creating the Thread by associating the socket and the port. 
+            thread.start()
+        
+    def accept_connections(self,socket,port_dst):
         while True:
-            clientsocket, (ip,port) = self.socket.accept()
-            newthread = ClientThread(ip ,port , clientsocket,self)
+            clientsocket, (ip,port) = socket.accept()
+            newthread = ClientThread(ip ,port , clientsocket,port_dst)
             newthread.start()
 
 
 class ClientThread(threading.Thread):
 
-    def __init__(self, ip, port, clientsocket,server):
-
+    def __init__(self, ip, port, clientsocket,port_dst):
+        global dict
+        dict[port] = {}
         print("connection from",ip)
+        print("connection from port (source port)",port)
         self.ip = ip
-        self.port = port
+        self.dst_port=port_dst
+        self.port=port
+        print("connection on port (dst port)"+str(port_dst))
         self.clientsocket = clientsocket
         self.server = server
+        self.BD_uc_uo=b''
+        self.Sigma_AT_SUB_REQ=b''
+        self.C_AT=b''
+        self.Nonce_SesKVeh=b''
+        self.ID_BD=''
+        self.ID_AT=''
+        self.start_time_A1 = time.time()
         threading.Thread.__init__(self)
 
     def close(self):
@@ -236,22 +256,24 @@ class ClientThread(threading.Thread):
     def reservation(self):
         ##
         ##global session_key
-        global BD_uc_uo
-        global C_AT
-        global Sigma_AT_SUB_REQ
-        global Nonce_SesKVeh 
-        global ID_BD
-        global ID_AT
-        global start_time_A1
+        # BD_uc_uo
+        # C_AT
+        # Sigma_AT_SUB_REQ
+        # Nonce_SesKVeh 
+        # ID_BD
+        # ID_AT
+        # start_time_A1
+        global dict
 
         #STEP A1: Reception of BD_uc_uo
         print("---PHASE 1 ---\n")
         print("---Reception of BD_uo_uc from the Customer ---\n")
-        start_time_A1 = time.time()
+        
         certificate_customer=get_certificate_der("cert_customer.der")
     
-        BD_uc_uo=self.receive()
-        BD_uc_uo_string=BD_uc_uo.decode()
+        self.BD_uc_uo=self.receive()
+        BD_uc_uo_string=self.BD_uc_uo.decode()
+        print("BD UC UO STRING IS:"+BD_uc_uo_string)
         h_cert_uc=BD_uc_uo_string.splitlines()[4]
         print("\nh_cert_uc received is: "+h_cert_uc)
         h_cert_uc_calc=hashlib.sha256((certificate_customer)).hexdigest()
@@ -259,16 +281,16 @@ class ClientThread(threading.Thread):
         print("BD_uc_uo received is :\n"+BD_uc_uo_string) #To DELETE
         self.send_text_java("BD_uc_uo received")
         print("\nBD_uc_uo well received\n")
-        Contract_BD=sign(BD_uc_uo,private_key_sp_pem)
+        Contract_BD=sign(self.BD_uc_uo,private_key_sp_pem)
         print("\n----Contract_BD has ben done by signing BD_uc_uo with the SP Private key---")
         
 
 
         ##STEP A2:
-        ID_BD=BD_uc_uo_string.splitlines()[0]
-        ID_AT=str(random.randint(1, 1000))
-        print("\nID_AT is generated randomly: "+ID_AT)
-        AT=ID_BD+"\n"+BD_uc_uo_string+ID_AT
+        self.ID_BD=BD_uc_uo_string.splitlines()[0]
+        self.ID_AT=str(random.randint(1, 1000))
+        print("\nID_AT is generated randomly: "+self.ID_AT)
+        AT=self.ID_BD+"\n"+BD_uc_uo_string+self.ID_AT
         print("\nAT is: \n"+AT)
 
 
@@ -294,9 +316,16 @@ class ClientThread(threading.Thread):
         #CONNECTION WITH THE CAR
         print("\nConnection with the CAR")
         sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock2.connect(('127.0.0.1',50020))
+        port=self.dst_port+10000
+        print("port is "+str(port))
+        sock2.connect(('127.0.0.1',port))
         sock2.send("AT_Contract".encode())
         ACK=sock2.recv(1024)
+
+
+        sock2.send(self.port.to_bytes(4,byteorder='big')) #Sending_Num_Session
+        ACK=sock2.recv(1024)
+
         sock2.send(C_AT)
         ACK=sock2.recv(1024)
         sock2.send(Contract_BD)
@@ -305,37 +334,56 @@ class ClientThread(threading.Thread):
         ACK=sock2.recv(1024)
         sock2.send(Nonce_SesKVeh)
         ACK=sock2.recv(1024)
-        return BD_uc_uo,Sigma_AT_SUB_REQ,C_AT,Nonce_SesKVeh
+        dict[self.port]["BD_uc_uo"] = self.BD_uc_uo
+        dict[self.port]["ID_AT"] = self.ID_AT
+        dict[self.port]["ID_BD"] = self.ID_BD
+        dict[self.port]["start_time_A1"] = self.start_time_A1
+
+        return self.BD_uc_uo,Sigma_AT_SUB_REQ,C_AT,Nonce_SesKVeh,self.ID_BD
  
 
     def step_A4(self):
         
-        global BD_uc_uo
-        global C_AT
-        global Sigma_AT_SUB_REQ
-        global Nonce_SesKVeh 
-        global Sigma_AT_SUB_ACK
-        global h_BD_uc_uo
+        # BD_uc_uo
+        # C_AT
+        # Sigma_AT_SUB_REQ
+        # Nonce_SesKVeh 
+        # Sigma_AT_SUB_ACK
+        # h_BD_uc_uo
 
         'RECEIVE FROM THE CAR'
+        num_session = self.receive()
+        self.send_text2("\nSession Number received")
+        num_session=int.from_bytes(num_session,byteorder='big')
+        self.BD_uc_uo=dict[num_session]["BD_uc_uo"]
+        self.ID_AT=dict[num_session]["ID_AT"]
+        self.ID_BD=dict[num_session]["ID_BD"]
+        self.start_time_A1=dict[num_session]["start_time_A1"]
         Sigma_AT_SUB_ACK = self.receive()
         self.send_text2("\nSigma_AT_SUB_ACK Received")
         h_BD_uc_uo = self.receive()
         print("\nh_BD_uc_uo Received : "+h_BD_uc_uo.decode())
         self.send_text2("h_BD_uc_uo Received :")
 
-        h_BD_uc_uo_prime=hashlib.sha256((BD_uc_uo)).hexdigest()
+        h_BD_uc_uo_prime=hashlib.sha256((self.BD_uc_uo)).hexdigest()
         if h_BD_uc_uo_prime==h_BD_uc_uo.decode():
             print("h_BD_uc_uo CHECKED AND OK")
         else:
             print("h_BD_uc_uo FAIL VERIFICATION")
         certificate_car=get_certificate("cert_car.crt")
-        Sigma_AT_SUB_ACK_data=ID_BD+ID_AT+h_BD_uc_uo.decode()
+        Sigma_AT_SUB_ACK_data=self.ID_BD+self.ID_AT+h_BD_uc_uo.decode()
+        print("IDS ARE :"+"ID BD "+self.ID_BD+" ID_AT "+self.ID_AT)
         print("Sigma_AT_SUB_ACK_data: "+Sigma_AT_SUB_ACK_data)
         res=verifsign(certificate_car,Sigma_AT_SUB_ACK,Sigma_AT_SUB_ACK_data.encode())
         print("Sigma_AT_SUB_ACK Verified Successfully")
-        print("\n\n--- time of Step A1 to A4 ---: %s" % (time.time() - start_time_A1))
-        
+        print("\n\n--- time of Step A1 to A4 ---: %s" % (time.time() - self.start_time_A1))
+        dict[self.port]["TIME"] = time.time() - self.start_time_A1
+
+        with open('file_time.csv', mode='a', newline='') as fichier_csv:
+            writer = csv.writer(fichier_csv)
+    
+        # Écrire la commande dans une seule ligne du fichier CSV
+            writer.writerow([self.port,time.time() - self.start_time_A1])
         #CONNECTION WITH THE PORTABLE AGAIN
 
 
@@ -404,4 +452,4 @@ private_key_sp,public_key, private_key_sp_pem=generate_keys() #Generation of the
 private_key_car,public_key, private_key_car_pem=generate_keys_car() #Generation of the keys
 #cert=create_certificate(key) #Creattion of the certificate for public keys
 print("Keys generated ready") #SEVER IS NOW READY
-server(HOST,PORT)
+server(HOST,PORTS)

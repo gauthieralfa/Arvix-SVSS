@@ -20,6 +20,7 @@ import java.security.PublicKey;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 
 import com.google.crypto.tink.tinkkey.KeyAccess;
@@ -30,8 +31,6 @@ public class phase1Activity extends AppCompatActivity {
 
     private Button mValidParametersBtn;
     private TextView ID_BD_text;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +66,7 @@ public class phase1Activity extends AppCompatActivity {
 //Our secret message
 
                                                        for (int i=0;i<Variables.iteration;i++) {
+                                                           long startActivity = System.currentTimeMillis();
 
                                                            StringBuilder hCert_uc_hex;
                                                            String hCert_uc64="";
@@ -80,8 +80,6 @@ public class phase1Activity extends AppCompatActivity {
                                                                    hCert_uc_hex.append(String.format("%02x", b));
                                                                }
 
-
-
                                                                hCert_uc64= Base64.getEncoder().encodeToString(hCert_uc);
                                                                System.out.println("hCert_uc is: "+hCert_uc_hex.toString());
                                                            } catch (Exception e) {
@@ -89,18 +87,24 @@ public class phase1Activity extends AppCompatActivity {
                                                            }
 
                                                            int ID_Cert_veh = (int)Math.floor(Math.random() * (10000 - 1 + 1) + 1); //Random ID
-                                                           String TS_BReq = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+                                                           // TO DELETE : String TS_BReq = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
                                                            String BD_uo_uc = ID_BD + "\n" +ID_uo + "\n" +ID_uc + "\n" + ID_veh + "\n" + hCert_uc_hex.toString() + "\n"+ ID_Cert_veh + "\n";
-                                                           long startActivity = System.currentTimeMillis();
+
+
 
                                                            phase1serverActivity client = null;
                                                            try {
-                                                               client = new phase1serverActivity(Variables.address, BD_uo_uc, startActivity);
+                                                               client = new phase1serverActivity(Variables.address, BD_uo_uc, startActivity,Variables.port);
                                                            } catch (IOException e) {
                                                                e.printStackTrace();
                                                            }
                                                            new Thread(client).start();
-                                                           finish();
+                                                           //finish(); //Finish waits normally the end of the Thread to continue. Should not be used.
+                                                           long endTime = System.currentTimeMillis();
+                                                           long timeActivity=endTime - startActivity;
+                                                           //System.out.println("\nEnd of the 10 times execution" + timeActivity);
+                                                           //timeActivity_table[i]= (int) timeActivity; //THE USE OF A GLOBAL IS MANDATORY FOR THAT, with the index put.
+
                                                        }
                                                    }
                                                }

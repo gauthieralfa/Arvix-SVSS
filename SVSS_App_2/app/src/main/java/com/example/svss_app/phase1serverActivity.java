@@ -42,9 +42,12 @@ public class phase1serverActivity implements Runnable {
         System.out.println("---RESERVATION STEP---"+port);
         out.flush();
 
-        out.writeUTF(String.valueOf(socket.getLocalPort())); //Sending Session Number to the SP (for threading management)
+        //out.writeUTF(String.valueOf(socket.getLocalPort())); //Sending Session Number to the SP (for threading management)
+        String[] lines = BD_uo_uc.split("\n");
+        String ID_UC=lines[2];
+        out.writeUTF(ID_UC); //NumberSession is the ID_UC
         out.flush();
-        System.out.println(port+"Session Number SENT:\n" + socket.getLocalPort());
+        System.out.println(port+"Session Number SENT:" + ID_UC);
 
         //Sending Booking Details BD_uo_uc
         out.writeUTF(BD_uo_uc);

@@ -5,10 +5,13 @@ import hashlib
 import rsa
 import base64
 import jpysocket
+from cryptography import x509
 from OpenSSL import crypto,SSL
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from datetime import datetime
@@ -20,10 +23,12 @@ from utils import generate_keys_car,generate_keys,get_certificate,sign,verifsign
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 num_ports = 1
 PORTS = [60000 + i for i in range(0, 0 + num_ports)]  # Port to listen on (non-privileged ports are > 1023)
+dict={}
 
 class server(object):
 
     def __init__(self, hostname, ports):
+        global dict
         self.hostname = hostname
         self.ports = ports
         self.sockets = []
@@ -82,6 +87,7 @@ class ClientThread(threading.Thread):
 
 
     def AT_Contract(self):
+        global dict
         print("AT_Contract_Function")
         num_session = receiveint(self)
         C_AT = receive_bytes_with_length(self)
@@ -89,7 +95,8 @@ class ClientThread(threading.Thread):
         Contract_BD = receive_bytes_with_length(self)
         Sigma_AT_SUB_REQ = receive_bytes_with_length(self)
         Nonce_SesKVeh = receive_bytes_with_length(self)
-
+        dict[num_session] = {}
+        dict[num_session]["Contract_BD"] = Contract_BD
 
         certificate_sp=get_certificate("cert_sp")
         res=verifsign(certificate_sp,Sigma_AT_SUB_REQ,C_AT+Nonce_SesKVeh)
@@ -133,21 +140,34 @@ class ClientThread(threading.Thread):
     def open_the_car(self):
 
         
-        Sigma_Uc64 = self.receive()
-        Sigma_Uc=base64.b64decode(Sigma_Uc64)
-        self.send_text_java("OK")
-        challenge_uc=self.receive()
+        Sigma_CR_AC_REQ64 = receivestring(self)
+        Sigma_CR_AC_REQ=base64.b64decode(Sigma_CR_AC_REQ64)
+        challenge_uc=receivestring(self)
+        print("challenge received : "+challenge_uc)
+        ID_UC=receivestring(self)
+        hContractBD=receivestring(self)
         certificate_customer=get_certificate("cert_customer")
-        print("challenge received : "+challenge_uc.decode())
-        self.send_text_java("OK")
-        cert_uc=self.receive()
+        cert_uc_bytes=self.clientsocket.recv(4096)
+        #h_cert_uc_calc=hashlib.sha256((cert_uc)).hexdigest()
+        #print("h_cert_uc_calc calculated : "+str(h_cert_uc_calc))
+        # par exemple : cert_bytes = file.read()
 
-        h_cert_uc_calc=hashlib.sha256((cert_uc)).hexdigest()
-        print("h_cert_uc_calc calculated : "+str(h_cert_uc_calc))
-        res=verifsign(certificate_customer,Sigma_Uc,challenge_uc)        
+        # Charger le certificat à partir des bytes
+        cert_uc = x509.load_der_x509_certificate(cert_uc_bytes, backend=default_backend())
+
+        # Extraire la clé publique du certificat
+        public_key = cert_uc.public_key()
+
+
+        res=verifsign(public_key,Sigma_CR_AC_REQ,challenge_uc+"\n"+ID_UC+"\n"+hContractBD);       
         print("Signature challenge checked")
-        self.send_text_java("ACK")
-        print("The CAR IS OPEN")
+        Contract_BD=dict[int(ID_UC)]["Contract_BD"] #Getting Contract_BD received by the SP
+        hContractBD_prime=hashlib.sha256((Contract_BD)).hexdigest()
+        if hContractBD==hContractBD_prime:
+            print("HASH is VALID")
+        else:
+            print("INVALID HASH, CAR NOT OPEN")
+        #LATER ... Sigma_CR_AC_GRANTED=sign(ID_BD+ID_AT,private_key_car) with data from ID_UC instead of port.
         print("END OF STEP 3/3")
 
 
@@ -156,9 +176,8 @@ class ClientThread(threading.Thread):
         print("Thread",threading.get_ident(),"started")
         step=receivestring(self)
         if step=="AT_Contract":
-            #self.send_text("OK")
             self.AT_Contract()
-        elif step=="open".encode():
+        elif step=="open":
             self.open_the_car() 
 
 

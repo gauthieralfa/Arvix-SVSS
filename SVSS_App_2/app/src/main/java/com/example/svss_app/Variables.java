@@ -6,9 +6,9 @@ public class Variables {
     public static String addresscar="10.0.2.2";
     public static int port=50000;
     public static int portcar=60000;
-    public static int ID_uc=5000;
+    public static int ID_uc;
     public static int num_session;
-    public static String h_BD_uc_uo64;
+    public static String hContractBD;
 }
 
 

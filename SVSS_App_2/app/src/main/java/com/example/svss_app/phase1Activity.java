@@ -43,16 +43,17 @@ public class phase1Activity extends AppCompatActivity {
 
         int ID_BD = (int)Math.floor(Math.random() * (10000 - 1 + 1) + 1); //Random ID
         int ID_uo = (int)Math.floor(Math.random() * (10000 - 1 + 1) + 1); //Random ID
-        int ID_uc = Variables.ID_uc; //Known by Customer - Fixed
+        //int ID_uc = (int)Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+        //Variables.ID_uc=ID_uc; //Known by Customer - Fixed
         int ID_veh = (int)Math.floor(Math.random() * (10000 - 1 + 1) + 1); //Random ID
 
         TextView ID_BD_text= (TextView) findViewById(R.id.text_view_ID_BD);
         TextView ID_Uo_text= (TextView) findViewById(R.id.text_view_ID_Uo);
-        TextView ID_uc_text= (TextView) findViewById(R.id.text_view_ID_uc);
+        //TextView ID_uc_text= (TextView) findViewById(R.id.text_view_ID_uc); For Simulation
         TextView ID_veh_text= (TextView) findViewById(R.id.text_view_ID_veh);
         ID_BD_text.setText(String.valueOf(ID_BD));
         ID_Uo_text.setText(String.valueOf(ID_uo));
-        ID_uc_text.setText(String.valueOf(ID_uc));
+        //ID_uc_text.setText(String.valueOf(ID_uc)); For Simulation
         ID_veh_text.setText(String.valueOf(ID_veh));
 
         mValidParametersBtn.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +66,8 @@ public class phase1Activity extends AppCompatActivity {
 
                                                        for (int i=0;i<Variables.iteration;i++) {
                                                            long startActivity = System.currentTimeMillis();
-
+                                                           int ID_uc = (int)Math.floor(Math.random() * (100000 - 1 + 1) + 1);
+                                                           Variables.ID_uc=ID_uc; //Known by Customer - Fixed
                                                            StringBuilder hCert_uc_hex;
                                                            String hCert_uc64="";
                                                            try {
@@ -94,7 +96,7 @@ public class phase1Activity extends AppCompatActivity {
                                                                e.printStackTrace();
                                                            }
                                                            new Thread(client).start();
-                                                           //finish(); //Finish waits normally the end of the Thread to continue. Should not be used.
+                                                           finish(); //Finish waits normally the end of the Thread to continue. Should not be used.
                                                        }
                                                    }
                                                }

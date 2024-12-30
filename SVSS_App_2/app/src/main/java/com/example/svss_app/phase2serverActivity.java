@@ -51,9 +51,9 @@ public class phase2serverActivity implements Runnable {
 
         // Sending Session Number to the SP
         //out.writeInt(Variables.num_session); //Sending Session Number to the SP
-        out.writeUTF(String.valueOf(Variables.num_session));
+        out.writeUTF(String.valueOf(Variables.ID_uc));
         out.flush();
-        System.out.println("Num Session sent to the SP is: "+Variables.num_session);
+        System.out.println("Num Session sent to the SP is: "+Variables.ID_uc);
 
 
         //Receiving Sigma_AT_SUB_ACK from the SP
@@ -66,7 +66,6 @@ public class phase2serverActivity implements Runnable {
         byte[] h_BD_uc_uo=receiveByte(in);
         String h_BD_uc_uo64=new String(h_BD_uc_uo);
         System.out.println("Server received h_BD_uc_uo: "+h_BD_uc_uo64);
-        //TO REMOVE : Variables.h_BD_uc_uo64=h_BD_uc_uo64;
 
 
         //receiving IB_BD and ID_AT from the SP
@@ -94,7 +93,13 @@ public class phase2serverActivity implements Runnable {
                 e.printStackTrace();
             }
 
-            //To ADD : Receiving hash contract BD !
+            //Receiving hashContractBD !
+            byte[] hContractBD_byte=receiveByte(in);
+            String hContractBD=new String(hContractBD_byte);
+            Variables.hContractBD=hContractBD;
+            System.out.println("Server received hContractBD: "+hContractBD);
+
+
 
             // Getting time value of this step...
             long endTime = System.currentTimeMillis();

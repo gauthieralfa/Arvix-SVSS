@@ -1,37 +1,17 @@
 package com.example.svss_app;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Intent;
 import android.os.Build;
-import android.os.Environment;
 import androidx.annotation.RequiresApi;
-
 import android.util.Log;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.security.PublicKey;
 
 public class phase1serverActivity implements Runnable {
     long startactivity;
-    PublicKey publicKey;
     String BD_uo_uc;
     String ServerAdress;
-    String BAvail;
     Socket socket;
     DataOutputStream out;
-    DataInputStream in;
     int port;
 
     public phase1serverActivity(String s, String BD_uo_uc, long startactivity,int port) throws IOException {
@@ -56,27 +36,30 @@ public class phase1serverActivity implements Runnable {
             e.printStackTrace();
         }
 
-        out = new DataOutputStream(socket.getOutputStream());
-        in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+        //Sending Session Number to the SP
+        out = new DataOutputStream(socket.getOutputStream()); //Output Stream socket
         out.writeUTF("reservation");
         System.out.println("---RESERVATION STEP---"+port);
         out.flush();
-        out.writeInt(socket.getLocalPort());
+
+        out.writeUTF(String.valueOf(socket.getLocalPort())); //Sending Session Number to the SP (for threading management)
         out.flush();
         System.out.println(port+"Session Number SENT:\n" + socket.getLocalPort());
+
+        //Sending Booking Details BD_uo_uc
         out.writeUTF(BD_uo_uc);
         out.flush();
         System.out.println(port+"BD_uc_uo SENT:\n" + BD_uo_uc);
         System.out.println(port+"----- BD_uc_uo SENT to the Service Provider ----");
+
+        // Getting time value of this step... (More relevant on the SP side)
         long endTime = System.currentTimeMillis();
         long timeActivity=endTime - startactivity;
         System.out.println("\n+"+port+"Total execution time OPEN CAR ACTIVITY: " + timeActivity);
-        Variables.num_session= socket.getLocalPort();
-        System.out.println("\n+"+"LOCAL PORT IS: " + Variables.num_session);
-
+        Variables.num_session= socket.getLocalPort(); //Updating the number session used
+        System.out.println("\n+"+"Session Number used is: " + Variables.num_session); //Verifying if it is updated
+        System.out.println("\n+"+"END of STEP 1/3");
     }
-
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void run() {
@@ -87,56 +70,4 @@ public class phase1serverActivity implements Runnable {
             e.printStackTrace();
         }
     }
-
-
-    public static void write_file(long data,String timeActivity) {
-        FileOutputStream output = null;
-        java.io.File path = new java.io.File(Environment.getExternalStorageDirectory() + "/");
-        java.io.File fichier = new File(path, timeActivity + ".txt");
-        try {
-            try (PrintWriter p = new PrintWriter(new FileOutputStream(fichier, true))) {
-                p.println(data);
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            }
-
-            if (output != null)
-                output.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String receive_base64_python(InputStream sin, DataInputStream in,PrintWriter out){
-        byte[] size_buff = new byte[1024];
-        try {
-            sin.read(size_buff);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int size = ByteBuffer.wrap(size_buff).asIntBuffer().get();
-        System.out.format("Expecting %d bytes\n", size);
-
-
-        out.print("OK");
-        out.flush();
-
-        byte[] message = new byte[0];
-        if(size>0) {
-            message = new byte[size];
-            try {
-                in.readFully(message, 0, message.length); // read the message
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        String res64=new String(message);
-        return res64;
-    }
-
-
-
 }

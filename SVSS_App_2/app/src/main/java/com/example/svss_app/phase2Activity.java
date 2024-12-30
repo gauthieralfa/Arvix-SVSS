@@ -55,12 +55,4 @@ public class phase2Activity extends AppCompatActivity {
                                                }
         );
     }
-
-    public static int rand(){
-        Random r = new Random();
-        int low = 1;
-        int high = 1000;
-        int result = r.nextInt(high-low) + low;
-        return result;
-    }
 }

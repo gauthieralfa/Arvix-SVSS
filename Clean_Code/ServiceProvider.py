@@ -105,9 +105,9 @@ class ClientThread(threading.Thread):
         #PHRASE DE TEST
         certificate_customer=get_certificate_der("cert_customer.der")
         #Receiving Session Number
-        self.session_number=receiveint(self)
+        self.session_number=receivestring(self)
         self.int_session_number = int(self.session_number)
-        print("SESSION IS"+str(self.int_session_number))
+        print("SESSION IS: "+str(self.int_session_number))
         dict[self.int_session_number] = {}
         #End Receiving Session Number
         ##ENDING PHASE DE TEST
@@ -162,12 +162,12 @@ class ClientThread(threading.Thread):
         sock2.connect(('127.0.0.1',port_car))
         sendstring(sock2,"AT_Contract")
 
-        sock2.sendall(self.session_number.to_bytes(4,byteorder='big')) #Sending_Num_Session. Replace by self_port without NAT. 
+        sock2.sendall(self.int_session_number.to_bytes(4,byteorder='big')) #Sending_Num_Session. Replace by self_port without NAT. 
         send_bytes_with_length(sock2,C_AT)
         send_bytes_with_length(sock2,Contract_BD)
         send_bytes_with_length(sock2,Sigma_AT_SUB_REQ)
         send_bytes_with_length(sock2,Nonce_SesKVeh)
-        print("LE SELF PORT IS: "+str(self.session_number))
+        print("LE SELF PORT IS: "+str(self.int_session_number))
         print("LE SELF PORTCAR IS: "+str(port_car)) ##replace self.session_number by self.port is port is not NATED.
         dict[self.int_session_number]["BD_uc_uo"] = self.BD_uc_uo
         dict[self.int_session_number]["ID_AT"] = self.ID_AT
@@ -217,7 +217,8 @@ class ClientThread(threading.Thread):
     def updated_step(self):
                 
         ## Receiving Session Number (for threading)
-        num_session=receiveint(self)
+        num_session_str=receivestring(self)
+        num_session=int(num_session_str)
         print("num session is: "+str(num_session))
         Sigma_AT_SUB_ACK=dict[num_session]["Sigma_AT_SUB_ACK"]
         h_BD_uc_uo=dict[num_session]["h_BD_uc_uo"]
@@ -232,11 +233,11 @@ class ClientThread(threading.Thread):
         ID_BD_ID_AT=str(ID_BD)+"\n"+str(ID_AT)
         send_bytes_with_length(self.clientsocket,ID_BD_ID_AT.encode()) #Envoi de la signature en Byte
         print("all files sent")
-        Activity_phase2=receive_bytes_with_length(self)
-        print("Activity_time is: "+str(Activity_phase2))
+        activity_phase2=receivestring(self)
+        print("Activity_time is: "+str(activity_phase2))
         with open('file_time2.csv', mode='a', newline='') as fichier_csv:
             writer = csv.writer(fichier_csv)
-            writer.writerow([num_session,Activity_phase2])
+            writer.writerow([num_session,activity_phase2])
         print("END OF STEP 2/3")
 
 

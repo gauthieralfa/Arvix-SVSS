@@ -71,10 +71,8 @@ public class Crypto {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 privateSignature.update(plainText.getBytes(UTF_8));
             }
-
             byte[] signature = privateSignature.sign();
             String signature_string=null;
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 signature_string= Base64.getEncoder().encodeToString(signature);
             }

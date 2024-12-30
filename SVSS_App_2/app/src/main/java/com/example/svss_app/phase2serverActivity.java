@@ -3,40 +3,25 @@ package com.example.svss_app;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import android.util.Log;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
-
-//import com.google.crypto.tink.tinkkey.KeyAccess;
-//import com.google.crypto.tink.tinkkey.KeyHandle;
-
 
 public class phase2serverActivity implements Runnable {
 
     String ServerAdress;
     Socket socket;
-    //PrintWriter out;
     DataOutputStream out;
     DataInputStream in;
     long startActivity;
-    Boolean go = false;
 
     public phase2serverActivity(String s,long startActivity) throws IOException {
         this.ServerAdress = s;
         this.startActivity=startActivity;
     }
-
-
     public void OpenClientCommunication() throws IOException {
         try {
             startActivity = System.currentTimeMillis();
@@ -55,40 +40,44 @@ public class phase2serverActivity implements Runnable {
             e.printStackTrace();
         }
 
-        Crypto crypto=new Crypto();
+        Crypto crypto=new Crypto(); //Loading Crypto functions
+        out = new DataOutputStream(socket.getOutputStream()); //Output Stream socket
+        in = new DataInputStream((socket.getInputStream())); //Input Stream socket
 
-        out = new DataOutputStream(socket.getOutputStream());
-        in = new DataInputStream((socket.getInputStream()));
-        out.writeUTF("updated_step");
+        //Indicating the step to the SP
+        out.writeUTF("updated_step"); //going to the second step
         out.flush();
-        System.out.println("updated_step_sent");
-        // Sending Session Number
-        out.writeInt(Variables.num_session);
-        System.out.println("Num Session sent is: "+Variables.num_session);
+        System.out.println("updated_step sent to the SP");
+
+        // Sending Session Number to the SP
+        //out.writeInt(Variables.num_session); //Sending Session Number to the SP
+        out.writeUTF(String.valueOf(Variables.num_session));
         out.flush();
+        System.out.println("Num Session sent to the SP is: "+Variables.num_session);
 
-        // UNTILL here, IT WORKS WELL.
 
-        //FONCTION BEING CREATED
+        //Receiving Sigma_AT_SUB_ACK from the SP
         byte[] Sigma_AT_SUB_ACK=receiveByte(in);
         String Sigma_AT_SUB_ACK_str=new String(Sigma_AT_SUB_ACK);
         String Sigma_AT_SUB_ACK644 = Base64.getEncoder().encodeToString(Sigma_AT_SUB_ACK);
         System.out.println("Server received Sigma_AT_SUB_ACK: "+Sigma_AT_SUB_ACK644);
-//h_BD_uc_uo Received
+
+        //Receiving h_BD_uc_uo from the SP
         byte[] h_BD_uc_uo=receiveByte(in);
         String h_BD_uc_uo64=new String(h_BD_uc_uo);
-
         System.out.println("Server received h_BD_uc_uo: "+h_BD_uc_uo64);
+        //TO REMOVE : Variables.h_BD_uc_uo64=h_BD_uc_uo64;
+
+
+        //receiving IB_BD and ID_AT from the SP
         byte[] ID_BD_ID_AT=receiveByte(in);
-
         String ID_BD_ID_AT_str=new String(ID_BD_ID_AT);
-
         System.out.println("Server received ID_BD_ID_AT_str: "+ID_BD_ID_AT_str);
         String[] lines = ID_BD_ID_AT_str.split("\n", -1);
         String ID_BD=lines[0];
         String ID_AT=lines[1];
 
-        // CHECK Signature
+        // Checking Signature of Sigma_AT_SUB_ACK
         PublicKey pub_key = null;
         boolean verif = Boolean.parseBoolean(null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -96,23 +85,27 @@ public class phase2serverActivity implements Runnable {
                 pub_key=crypto.get_public_key("pub_car");
                 verif=crypto.verify(ID_BD+ID_AT+h_BD_uc_uo64,Sigma_AT_SUB_ACK644,pub_key);
                 if (verif==true){
-                    System.out.println("Signature Sigma_AT_SUB_ACK OK!\n" );
+                    System.out.println("Signature Sigma_AT_SUB_ACK IS OK!\n" );
                 }
                 else{
-                    System.out.println("!!! Signature Sigma_AT_SUB_ACK NOK !!!\n" );
+                    System.out.println("!!! WRONG Signature Sigma_AT_SUB_ACK !!!\n" );
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            //To ADD : Receiving hash contract BD !
+
+            // Getting time value of this step...
             long endTime = System.currentTimeMillis();
             long timeActivity=endTime - startActivity;
             System.out.println("\nTotal execution time PHASE 2: " + timeActivity +" ms");
             int time_int=(int)timeActivity;
             System.out.println("\nTotal execution INT: " + time_int +" ms");
-            out.writeInt(time_int);
+            //out.writeInt(time_int); //Sending time to the SP that will put it in a file...
+            out.writeUTF(String.valueOf(time_int));
             out.flush();
-
+            System.out.println("END OF STEP 2/3 ");
         }
     }
 
@@ -127,41 +120,10 @@ public class phase2serverActivity implements Runnable {
             e.printStackTrace();
         }
     }
-
-
-
     public static byte[] receiveByte(DataInputStream in) throws IOException {
         int length=in.readInt();
         byte[] data=new byte[length];
         in.readFully(data);
         return data;
     }
-
-    public static String receive_base64_python(InputStream sin, DataInputStream in,PrintWriter out){
-        byte[] size_buff = new byte[1024];
-        try {
-            sin.read(size_buff);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int size = ByteBuffer.wrap(size_buff).asIntBuffer().get();
-        System.out.format("Expecting %d bytes\n", size);
-
-
-        out.print("OK");
-        out.flush();
-
-        byte[] message = new byte[0];
-        if(size>0) {
-            message = new byte[size];
-            try {
-                in.readFully(message, 0, message.length); // read the message
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        String res64=new String(message);
-        return res64;
-    }
-
 }

@@ -30,13 +30,11 @@ import com.google.crypto.tink.tinkkey.KeyHandle;
 public class phase1Activity extends AppCompatActivity {
 
     private Button mValidParametersBtn;
-    private TextView ID_BD_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phase1);
         final String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
         Crypto crypto=new Crypto();
         mValidParametersBtn = (Button) findViewById(R.id.activity_parameters_valid_btn);
 
@@ -89,9 +87,6 @@ public class phase1Activity extends AppCompatActivity {
                                                            int ID_Cert_veh = (int)Math.floor(Math.random() * (10000 - 1 + 1) + 1); //Random ID
                                                            // TO DELETE : String TS_BReq = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
                                                            String BD_uo_uc = ID_BD + "\n" +ID_uo + "\n" +ID_uc + "\n" + ID_veh + "\n" + hCert_uc_hex.toString() + "\n"+ ID_Cert_veh + "\n";
-
-
-
                                                            phase1serverActivity client = null;
                                                            try {
                                                                client = new phase1serverActivity(Variables.address, BD_uo_uc, startActivity,Variables.port);
@@ -100,11 +95,6 @@ public class phase1Activity extends AppCompatActivity {
                                                            }
                                                            new Thread(client).start();
                                                            //finish(); //Finish waits normally the end of the Thread to continue. Should not be used.
-                                                           long endTime = System.currentTimeMillis();
-                                                           long timeActivity=endTime - startActivity;
-                                                           //System.out.println("\nEnd of the 10 times execution" + timeActivity);
-                                                           //timeActivity_table[i]= (int) timeActivity; //THE USE OF A GLOBAL IS MANDATORY FOR THAT, with the index put.
-
                                                        }
                                                    }
                                                }

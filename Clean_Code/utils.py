@@ -75,6 +75,7 @@ def receivestring(self):
 
 def receiveint(self):
     data=self.clientsocket.recv(4)
+    print("size entier"+str(len(data)))
     int_value = int.from_bytes(data, byteorder='big')
     return int_value
 

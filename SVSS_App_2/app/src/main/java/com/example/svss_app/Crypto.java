@@ -152,7 +152,7 @@ public class Crypto {
                 throws Exception {
 
             byte[] keyBytes = Files.readAllBytes(Paths.get("/storage/emulated/0/"+namekey+".der"));
-
+            //byte[] keyBytes = Files.readAllBytes(Paths.get("/storage/emulated/0/SVSS_Files/"+namekey+".der"));
 
             X509EncodedKeySpec spec =
                     new X509EncodedKeySpec(keyBytes);
@@ -168,6 +168,7 @@ public class Crypto {
 
             byte[] keyBytes = new byte[0];
             keyBytes = Files.readAllBytes(Paths.get("/storage/emulated/0/" + namekey + ".der"));
+            //keyBytes = Files.readAllBytes(Paths.get("/storage/emulated/0/SVSS_Files/" + namekey + ".der"));
 
             PKCS8EncodedKeySpec spec =
                     new PKCS8EncodedKeySpec(keyBytes);

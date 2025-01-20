@@ -1,6 +1,7 @@
 import socket
 import time
 import threading
+import csv
 import hashlib
 import rsa
 import base64
@@ -40,7 +41,6 @@ class server(object):
             self.socket.listen()
             print("Car ready at port "+str(port))
             self.sockets.append(self.socket)
-
             # Start a thread to handle incoming connections on this socket
             thread = threading.Thread(target=self.accept_connections, args=(self.socket,port))
             thread.start()
@@ -62,6 +62,7 @@ class ClientThread(threading.Thread):
         self.dst_port=port_dst
         print("connection on port (dst port)"+str(port_dst))
         self.port = port
+        self.start_time_thread = time.time()
         self.clientsocket = clientsocket
         self.server = server
         threading.Thread.__init__(self)
@@ -146,28 +147,21 @@ class ClientThread(threading.Thread):
         print("challenge received : "+challenge_uc)
         ID_UC=receivestring(self)
         hContractBD=receivestring(self)
-        certificate_customer=get_certificate("cert_customer")
         cert_uc_bytes=self.clientsocket.recv(4096)
-        #h_cert_uc_calc=hashlib.sha256((cert_uc)).hexdigest()
-        #print("h_cert_uc_calc calculated : "+str(h_cert_uc_calc))
-        # par exemple : cert_bytes = file.read()
+        certificate=crypto.load_certificate(crypto.FILETYPE_PEM,cert_uc_bytes.decode())
 
-        # Charger le certificat à partir des bytes
-        cert_uc = x509.load_der_x509_certificate(cert_uc_bytes, backend=default_backend())
-
-        # Extraire la clé publique du certificat
-        public_key = cert_uc.public_key()
-
-
-        res=verifsign(public_key,Sigma_CR_AC_REQ,challenge_uc+"\n"+ID_UC+"\n"+hContractBD);       
+        res=verifsign(certificate,Sigma_CR_AC_REQ,challenge_uc+"\n"+ID_UC+"\n"+hContractBD);  
         print("Signature challenge checked")
         Contract_BD=dict[int(ID_UC)]["Contract_BD"] #Getting Contract_BD received by the SP
         hContractBD_prime=hashlib.sha256((Contract_BD)).hexdigest()
         if hContractBD==hContractBD_prime:
-            print("HASH is VALID")
+            print("HASH is VALID, CAR IS OPEN")
         else:
             print("INVALID HASH, CAR NOT OPEN")
         #LATER ... Sigma_CR_AC_GRANTED=sign(ID_BD+ID_AT,private_key_car) with data from ID_UC instead of port.
+        with open('file_time_step3.csv', mode='a', newline='') as fichier_csv:
+            writer = csv.writer(fichier_csv)
+            writer.writerow([ID_UC,time.time() - self.start_time_thread])
         print("END OF STEP 3/3")
 
 

@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -81,9 +83,8 @@ public class OpenCar extends AsyncTask<Void, Void, Void> {
         System.out.println("hContractBD sent to the car:"+Variables.hContractBD);
         out2.flush();
 
-        String pub_key_str=String.valueOf(pub_key);
-        byte[] pub_key_bytes = pub_key.getEncoded();
-        out2.write(pub_key_bytes);
+        byte[] keyBytes = Files.readAllBytes(Paths.get("/storage/emulated/0/cert_customer"));
+        out2.write(keyBytes);
         out2.flush();
         long endTime = System.currentTimeMillis();
         long timeActivity=endTime - startActivity;

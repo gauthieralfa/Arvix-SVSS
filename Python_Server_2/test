@@ -1,0 +1,3013 @@
+CXS-SDA1-WLC1#sh run
+Building configuration...
+
+Current configuration : 51196 bytes
+!
+! Last configuration change at 18:58:12 UTC Fri Dec 13 2024 by admin
+!
+version 17.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname CXS-SDA1-WLC1
+!
+boot-start-marker
+boot system bootflash:packages.conf
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+aaa new-model
+!
+!
+aaa group server radius dnac-acct-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa group server radius dnac-rGrp-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa authentication login default local
+aaa authentication dot1x default local
+aaa authentication dot1x dnac-cts-CXS-SDA1-P-83359e4a group dnac-rGrp-CXS-SDA1-P-83359e4a
+aaa authorization exec default local 
+aaa accounting update newinfo periodic 2880
+aaa accounting identity dnac-acct-CXS-SDA1-P-83359e4a start-stop group dnac-acct-CXS-SDA1-P-83359e4a
+!
+!
+aaa server radius dynamic-author
+ client 172.16.200.2 server-key cisco!123
+!
+          
+CXS-SDA1-WLC1#
+CXS-SDA1-WLC1#
+CXS-SDA1-WLC1#sh run | s lisp
+snmp-server enable traps lisp
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_client_data
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_ms_msg_stats_data
+CXS-SDA1-WLC1#sh run | s 192.168.10.65
+ ip address 192.168.10.65 key 0 a7c9b90ac8f642c6
+CXS-SDA1-WLC1#sh run 
+Building configuration...
+
+Current configuration : 51196 bytes
+!
+! Last configuration change at 18:58:12 UTC Fri Dec 13 2024 by admin
+!
+version 17.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname CXS-SDA1-WLC1
+!
+boot-start-marker
+boot system bootflash:packages.conf
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+aaa new-model
+!
+!
+aaa group server radius dnac-acct-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa group server radius dnac-rGrp-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa authentication login default local
+aaa authentication dot1x default local
+aaa authentication dot1x dnac-cts-CXS-SDA1-P-83359e4a group dnac-rGrp-CXS-SDA1-P-83359e4a
+aaa authorization exec default local 
+aaa accounting update newinfo periodic 2880
+aaa accounting identity dnac-acct-CXS-SDA1-P-83359e4a start-stop group dnac-acct-CXS-SDA1-P-83359e4a
+!
+!
+aaa server radius dynamic-author
+ client 172.16.200.2 server-key cisco!123
+!
+aaa session-id common
+!
+!
+!
+!
+!
+!
+!
+ip name-server 172.16.200.4
+ip domain name cx-south-sda.lab
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+vtp mode off
+vtp version 1
+! 
+! 
+! 
+! 
+!
+!
+access-session mac-move deny
+multilink bundle-name authenticated
+!
+pae
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+ hash sha256
+!
+crypto pki trustpoint TP-self-signed-2227976997
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2227976997
+ revocation-check none
+ rsakeypair TP-self-signed-2227976997
+ hash sha256
+!
+crypto pki trustpoint DNAC-CA
+ enrollment mode ra
+ enrollment terminal
+ usage ssl-client
+ revocation-check crl none
+ source interface Vlan1150
+ hash sha256
+!
+crypto pki trustpoint sdn-network-infra-iwan
+ enrollment url http://172.16.103.3:80/ejbca/publicweb/apply/scep/sdnscep
+ fqdn CXS-SDA1-WLC1.cx-south-sda.lab
+ subject-name CN=C9800-L-F-K9_FCL263900VV_sdn-network-infra-iwan
+ subject-alt-name CXS-SDA1-WLC1.cx-south-sda.lab
+ revocation-check crl
+ source interface Vlan1150
+ rsakeypair sdn-network-infra-iwan
+ auto-enroll 80 regenerate
+ hash sha256
+!
+!
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+        quit
+crypto pki certificate chain TP-self-signed-2227976997
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 32323237 39373639 3937301E 170D3137 30313032 31373235 
+  33365A17 0D323730 31303231 37323533 365A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 32323739 
+  37363939 37308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100C7E2 A9C7DEEB D572AD52 B8FC4A39 66156A01 0D3CB83A 1A7DC6A9 
+  FACDFD6E F1A417F1 11D82CA1 E301303B 0E16F9D1 7B1C3862 DD88511B D7DBDD9F 
+  6ED703AD 0667213D 133CB36A 725E9E05 F334CBFD 41F070F1 5A7853B0 6E564E65 
+  53E26732 BC3FD072 66CE7AE3 F770D7BC 354A522D 41380FE5 A0F4D61F 30765909 
+  A7AB3966 BBC56C32 C2C2F3E8 AE7CB4B7 99EA5A5A E654323F CEB3F2AB 1C9EF26A 
+  BEC76675 C8A4CF1C 2F15A4AB 55BE1C53 F63180D3 CF69CB93 D668E1F7 C51FAB36 
+  ED1EB7F4 B9E9C7E8 EE779557 455513C1 0D598F62 24C90E15 F1677656 D59A5086 
+  17A8C306 1849D775 C88FA886 8662AFA8 95F13AD5 F4900E70 19699E0B CA766B78 
+  22CB1B91 08A10203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14DA2BEB 513CA3E8 A0FF9B66 A0A03510 A4C14CE4 
+  24301D06 03551D0E 04160414 DA2BEB51 3CA3E8A0 FF9B66A0 A03510A4 C14CE424 
+  300D0609 2A864886 F70D0101 05050003 82010100 AA849FB5 5627A580 4F573B53 
+  54899C30 D0C642DF 0F6B7D80 EC96E85F 63A7D766 850CE784 D9DD4DD0 6C9559AD 
+  6EC61AC4 77B29023 5CC63E69 3452FB77 131F1CD6 648D960F 99AECA06 D45690B3 
+  E1242B39 04552DDA C6EFF83A 7EBFD6EE 2FDD1B30 AF92386B 4FF23980 DE2A6919 
+  7EBB7A52 065F7DF4 3B373136 57FB07C0 CA3C52A0 C30A2A7F 7E8E8B06 C738AF92 
+  F8603B96 3517DADA 0D78F2A7 CB41B083 37868BD8 4CF755AB E2597B88 043A1B96 
+  E42EA685 40F03A95 628289FA 803C7D8D F9F83CAF 2081FFA8 E5B9AB93 E4F6788C 
+  24AFF3EA BF676036 A0F94D58 E075C364 0C1A878F 78AF0FA9 F57A39FC 2C6094EA 
+  55DB8B1F 7FFD4A20 6E0993E2 E44A9F60 E5810219
+        quit
+crypto pki certificate chain DNAC-CA
+ certificate ca 13C68DB916CEE48F40B159BC2E75F14F
+  30820375 3082025D A0030201 02021013 C68DB916 CEE48F40 B159BC2E 75F14F30 
+  0D06092A 864886F7 0D01010B 0500304D 31133011 060A0992 268993F2 2C640119 
+  16036C61 62311C30 1A060A09 92268993 F22C6401 19160C63 782D736F 7574682D 
+  73646131 18301606 03550403 130F6378 2D736F75 74682D73 64612D43 41301E17 
+  0D323431 30303832 32313634 345A170D 32393130 30383232 32363434 5A304D31 
+  13301106 0A099226 8993F22C 64011916 036C6162 311C301A 060A0992 268993F2 
+  2C640119 160C6378 2D736F75 74682D73 64613118 30160603 55040313 0F63782D 
+  736F7574 682D7364 612D4341 30820122 300D0609 2A864886 F70D0101 01050003 
+  82010F00 3082010A 02820101 00C1A5D4 0C29516B 40D7D857 0C9B6904 751B107B 
+  6A7886F0 6472EE12 C659FAD0 AC40F266 3B42BED1 F073A2E1 36CF53F3 19EF7385 
+  4F293890 0D8C053F F077F8D4 4740F3EC 68C6BAAE D11EF1C2 2E5BB5E0 4EE8340A 
+  67EEA374 1592E884 803E11E7 B05792C9 BE8B1904 22695ACF 9251ED79 6F4B24BB 
+  C883F6FB F64EF14C 3614D1C3 C25E3864 EFD347FD EB4877B3 DAF4796B F3F5694C 
+  8FDD8BE0 CD3B2F71 7313E65B 4FBA978B DBE8F70A 8C648E98 0CF4EB30 AF98D279 
+  10BDE4B3 DAE23302 0C7D1736 84D8964F CBDA6F36 9D3C4934 C91104E9 4CE7DE13 
+  5E3B2071 A3C01F7F 2B31A748 9988AE2D 63ECBB78 61869CEF 896276AD EF93288A 
+  FDD819D1 5C0D7077 50415DB8 15020301 0001A351 304F300B 0603551D 0F040403 
+  02018630 0F060355 1D130101 FF040530 030101FF 301D0603 551D0E04 160414F0 
+  6EC25FA1 34DA1DBD 2FABBAC5 2C4348C6 667CCC30 1006092B 06010401 82371501 
+  04030201 00300D06 092A8648 86F70D01 010B0500 03820101 0089B17C DADC6DB3 
+  B03220F9 28A63785 8A938F28 6422B930 FBAE37C5 751E2AE8 A8EE794E DBF8009B 
+  0D7C0BA8 EAAB456B DD07FA4C 5B30AA68 C9B96D82 F6F17C04 E98F41E8 63496A5F 
+  F3FA2EE2 89A9041D 39936486 FD8F000F 182B1FC6 C7458155 17EBC6AE BCBF2FF0 
+  E04703AA B93F8DED E6677215 16BC32F9 3ACF712C A8F66B70 3F2121D1 F8A0F4E8 
+  4439BBD9 207E03E2 B7FBFE82 96FDD866 6275B024 8883F4D0 2ADF7493 98328C5C 
+  192A883D 35C34951 96DBF94F 177CB2FC CA030C45 77C44EAD 995DC446 85A316F0 
+  72F09C03 EF9A0845 FF75B9C4 78CC6082 22074F9F 32F665E9 2AE59865 189095FE 
+  04B73AFB 112128E3 5B7175DE 53988496 AB41D077 4843263C CA
+        quit
+crypto pki certificate chain sdn-network-infra-iwan
+ certificate 42D5B8ECD65C5757
+  30820389 30820271 A0030201 02020842 D5B8ECD6 5C575730 0D06092A 864886F7 
+  0D01010D 0500301F 311D301B 06035504 030C1473 646E2D6E 6574776F 726B2D69 
+  6E667261 2D636130 1E170D32 34313230 32313633 3031355A 170D3235 31323032 
+  31363330 31355A30 69312D30 2B06092A 864886F7 0D010902 0C1E4358 532D5344 
+  41312D57 4C43312E 63782D73 6F757468 2D736461 2E6C6162 31383036 06035504 
+  030C2F43 39383030 2D4C2D46 2D4B395F 46434C32 36333930 3056565F 73646E2D 
+  6E657477 6F726B2D 696E6672 612D6977 616E3082 0122300D 06092A86 4886F70D 
+  01010105 00038201 0F003082 010A0282 010100A9 5800DC00 166BC1DF 7C2EF804 
+  3534961D 544D8BAE A7033583 38D2A206 53406179 E7E2F021 53FFCE75 78771035 
+  E7D804AB 43F168FA A6D8DA3E 373516D9 2E020390 6DE08AD9 B9AC6C28 42B38C86 
+  E52F4FF8 4A64D44C AA846656 47BB719B 7176427E F4BC9E92 969D2DD6 704DC164 
+  BCF67FE3 C5F0DC88 736E9C10 8EF654C8 BD2DCD26 7E6D6C3A C732A092 92E2AF76 
+  7F8572AF 3746223E 631D93D2 1490663A 33BA3E36 0D95F364 DA376789 10C5A458 
+  41F891A4 1A2293FF 905FD667 3C27096F 1DC43D71 64245670 9A6D8C6C E29FBACE 
+  C432F7DF 68B3A57C 2D4C945A BA8B437F 5658C053 2A27214B AB98D654 E368E1B9 
+  11FD8CBC 5A4B4431 51CF1FCF 17CABB44 5A35A902 03010001 A37F307D 300C0603 
+  551D1301 01FF0402 3000301F 0603551D 23041830 16801484 D9D8ED20 E4C8AE9F 
+  647E37BD A91735B0 0EC03530 1D060355 1D250416 30140608 2B060105 05070302 
+  06082B06 01050507 0304301D 0603551D 0E041604 14C41D37 5289734A F62DB5A9 
+  28B281CD 4A04BE65 56300E06 03551D0F 0101FF04 04030205 E0300D06 092A8648 
+  86F70D01 010D0500 03820101 00064E02 4B67110F 6501E0C0 86FDE4D3 D8269AA9 
+  DB42170E 7F530378 22DB82E5 404C9FF6 AE099A71 2305812B 2AEA8C61 82766ECB 
+  DDB4FFB2 3A28EF04 117B1D84 86562FAD B205820F E77979D2 785E27E5 F4CBA498 
+  8AC4F039 E7D82F73 48E78A01 6645A80F 048238DF 4F8EDAAC A8B9BA6C 7B37A5F9 
+  8493B450 73E5532A E8EC14C1 C545115B 18D7F9E6 6FAB2681 22DCF83B F7434C5E 
+  AB1413BC 4B3B3759 8D0D725D 9718206A 179BA2DD A182D3E9 FBE5CB15 515AD2E5 
+  450DDBF3 5245A63D 137BB1C6 38AB4E9C 8595F6FA 6BBD1BDF 5D6A7570 B918B76C 
+  16EBB45F 18E68AB1 86C114D6 742A4D66 0AEAF7F2 2A7D56A8 3984DFBD AEA7B09D 
+  0B37417D DB55F3CC 5F3EAE5F 4D
+        quit
+ certificate ca 7769C3DFF410625D
+  30820323 3082020B A0030201 02020877 69C3DFF4 10625D30 0D06092A 864886F7 
+  0D01010D 0500301F 311D301B 06035504 030C1473 646E2D6E 6574776F 726B2D69 
+  6E667261 2D636130 1E170D32 34303231 36313635 3035335A 170D3239 30323134 
+  31363530 35335A30 1F311D30 1B060355 04030C14 73646E2D 6E657477 6F726B2D 
+  696E6672 612D6361 30820122 300D0609 2A864886 F70D0101 01050003 82010F00 
+  3082010A 02820101 00B64F81 0096E72D DA89B93B 31B661B6 C37459FA 1B92BCA4 
+  BABEBCB6 E67BF921 E4A95BBD 4FBF49F7 08D3674F 6D66DA4F F2863E18 BD058898 
+  12D8D2FD 1EE3023A 0CB8AFA6 C5655F3B 1A9F2D36 3DE88FAF 91ADCF0A 82889733 
+  5617FFA1 A8534B8F BBD55CD7 756D438D B9BB5ECC 0DF25B86 970BEEA6 A1B54C3C 
+  0CAD4217 78B114E3 01CEC0C8 92DC86B2 D071BDAF E6D28F65 F2C48DCB 78B2FDBC 
+  9824EFE6 9B3F031F 78B99AC4 F887D837 B613CE8D D3F4A25F 2D2E93A5 196057CB 
+  008D8A7C 66851B34 AA6EB713 15243B15 961FEAA5 5308668C 1AB90705 FFAA31BD 
+  EB0731A0 4490011C DFF2BB83 3EF61CFF FBA0C274 4EFFEBAE 84F63E50 8FB7E2B7 
+  0880E5BF C64F7B99 6F020301 0001A363 3061300F 0603551D 130101FF 04053003 
+  0101FF30 1F060355 1D230418 30168014 84D9D8ED 20E4C8AE 9F647E37 BDA91735 
+  B00EC035 301D0603 551D0E04 16041484 D9D8ED20 E4C8AE9F 647E37BD A91735B0 
+  0EC03530 0E060355 1D0F0101 FF040403 02018630 0D06092A 864886F7 0D01010D 
+  05000382 01010000 83C65B12 3DE0CD92 CAC802E3 5F39DC50 02E372EB 3AFE4E98 
+  FA120F86 6F33916E A2D15DF7 4F8C5ED6 1942A8F0 98B9B9FD BCD9B06D 9E7155BD 
+  1FDCF153 C95B4252 73378A0F CE1FB7FE E50BAC8A B7A05DCA 7AF79F86 B975F0A2 
+  DA0DA74C 8646E5AA 69A77F4B 88965C25 22631D7D 7553B230 955DDC04 2973BA1E 
+  08FC09F8 4EA401A6 AA13C4AA CA9DB905 5AFE6079 CF085287 C07C9B7F 53C82E10 
+  112827C3 DF2FDC61 E1669CFF 663B3DFD CDF2C32F E9067944 9778AEE9 EC72BE52 
+  0FCD2886 DF5A06B1 E4159DA7 726FD8D7 B44909BC 6D1C9CB4 2E70FC2D 0D02B97E 
+  04932EE5 0E50C8F8 EDAA0D78 28EFF1DD 7E1BD698 7BA6325A E40F53AC F6009D45 
+  7CD2B318 F32AA6
+        quit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+service-template DEFAULT_LINKSEC_POLICY_MUST_SECURE
+ linksec policy must-secure
+service-template DEFAULT_LINKSEC_POLICY_SHOULD_SECURE
+ linksec policy should-secure
+service-template DEFAULT_CRITICAL_VOICE_TEMPLATE
+ voice vlan
+service-template DEFAULT_CRITICAL_DATA_TEMPLATE
+service-template webauth-global-inactive
+ inactivity-timer 3600 
+memory free low-watermark processor 170271
+device classifier
+license udi pid C9800-L-F-K9 sn FCL263900NM
+license smart transport off
+diagnostic bootup level minimal
+!
+!
+!
+username admin privilege 15 secret 9 $9$fq9ZrUeZ829BCE$0K4RCVjCK5vFlOHJkaBPNWj9RvvHvR8dn1tUyytknW2
+!
+redundancy
+ mode sso
+!
+crypto engine compliance shield disable
+!
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+vlan 1150
+ name Management
+!
+!
+class-map match-any AVC-Reanchor-Class
+ match protocol cisco-jabber-audio
+ match protocol cisco-jabber-video
+ match protocol webex-media
+ match protocol webex-app-sharing
+ match protocol webex-control
+ match protocol webex-meeting
+ match protocol wifi-calling
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Port-channel1
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+!
+interface TwoGigabitEthernet0/0/0
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/1
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/2
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/3
+ negotiation auto
+ no snmp trap link-status
+!
+interface TenGigabitEthernet0/1/0
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+ negotiation auto
+ no snmp trap link-status
+ channel-group 1 mode desirable
+!
+interface TenGigabitEthernet0/1/1
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+ no negotiation auto
+ no snmp trap link-status
+ channel-group 1 mode desirable
+!
+interface GigabitEthernet0
+ description To MGMT
+ vrf forwarding Mgmt-intf
+ ip address 172.16.66.31 255.255.255.0
+ negotiation auto
+!
+interface Vlan1
+ no ip address
+ no ip proxy-arp
+!
+interface Vlan1150
+ ip address 172.16.103.9 255.255.255.248
+ no ip proxy-arp
+!
+ip forward-protocol nd
+no ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface Vlan1150
+ip ssh bulk-mode 131072
+ip ssh source-interface Vlan1150
+ip route 0.0.0.0 0.0.0.0 172.16.103.10
+ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 172.16.66.1
+!         
+!
+!
+logging source-interface Vlan1150
+logging host 172.16.103.3
+!
+snmp-server group default v3 priv 
+snmp-server group DNACGROUPAuthPriv v3 priv read DNAC-ACCESS write DNAC-ACCESS 
+snmp-server view DNAC-ACCESS iso included
+snmp-server trap-source Vlan1150
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps flowmon
+snmp-server enable traps pfr
+snmp-server enable traps ds1
+snmp-server enable traps entity-perf throughput-notif
+snmp-server enable traps wiredguest wired_guest
+snmp-server enable traps wireless bsnMobileStation bsnAutoRF bsnGeneral rogue MESH wireless_mobility RRM SI tunnel
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps casa
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps eigrp
+snmp-server enable traps pki
+snmp-server enable traps entity-sensor
+snmp-server enable traps entity
+snmp-server enable traps smart-license
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps aaa_server
+snmp-server enable traps atm subif
+snmp-server enable traps entity-qfp mem-res-thresh throughput-notif
+snmp-server enable traps entity-state
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+snmp-server enable traps ethernet evc status create delete
+snmp-server enable traps ether-oam
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps flash insertion removal lowspace
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps netsync
+snmp-server enable traps ptp
+snmp-server enable traps lost-ptp-slave
+snmp-server enable traps breach-ptp-offset-threshold
+snmp-server enable traps srp
+snmp-server enable traps entity-diag boot-up-fail hm-test-recover hm-thresh-reached scheduled-test-fail
+snmp-server enable traps cnpd
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+snmp-server enable traps isdn ietf
+snmp-server enable traps sonet
+snmp-server enable traps dlsw
+snmp-server enable traps resource-policy
+snmp-server enable traps bgp cbgp2
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps ipsla
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps dhcp
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps fru-ctrl
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps ipmulticast
+snmp-server enable traps msdp
+snmp-server enable traps mvpn
+snmp-server enable traps rsvp
+snmp-server enable traps ip local pool
+snmp-server enable traps syslog
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps l2tun tunnel
+snmp-server enable traps pimstdmib neighbor-loss invalid-register invalid-join-prune rp-mapping-change interface-election
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps envmon
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps gdoi ks-role-change
+snmp-server enable traps gdoi ks-gm-deleted
+snmp-server enable traps gdoi ks-peer-reachable
+snmp-server enable traps gdoi ks-peer-unreachable
+snmp-server enable traps lisp
+snmp-server enable traps sbc adj-status
+snmp-server enable traps sbc blacklist
+snmp-server enable traps sbc congestion-alarm
+snmp-server enable traps sbc h248-ctrlr-status
+snmp-server enable traps sbc media-source
+snmp-server enable traps sbc radius-conn-status
+snmp-server enable traps sbc sla-violation
+snmp-server enable traps sbc sla-violation-rev1
+snmp-server enable traps sbc svc-state
+snmp-server enable traps sbc qos-statistics
+snmp-server enable traps bfd
+snmp-server enable traps mpls rfc ldp
+snmp-server enable traps mpls ldp
+snmp-server enable traps mpls rfc traffic-eng
+snmp-server enable traps mpls traffic-eng
+snmp-server enable traps mpls fast-reroute protected
+snmp-server enable traps otn
+snmp-server enable traps pw vc
+snmp-server enable traps dial
+snmp-server enable traps diameter
+snmp-server enable traps dsp card-status
+snmp-server enable traps dsp oper-state
+snmp-server enable traps dsp video-usage
+snmp-server enable traps dsp video-out-of-resource
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps alarms informational
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps transceiver all
+snmp-server enable traps rf
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps vlan-membership
+snmp-server enable traps mpls vpn
+snmp-server enable traps mpls rfc vpn
+snmp-server enable traps voice
+snmp-server host 172.16.103.3 version 3 priv cisco 
+snmp-server manager
+!
+!
+!
+radius-server attribute 6 on-for-login-auth
+radius-server attribute 6 support-multiple
+radius-server attribute 8 include-in-access-req
+radius-server attribute 25 access-request include
+radius-server dead-criteria time 5 tries 3
+radius-server deadtime 3
+!
+radius server dnac-radius_172.16.200.2
+ address ipv4 172.16.200.2 auth-port 1812 acct-port 1813
+ timeout 4
+ retransmit 3
+ pac key cisco!123
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+line vty 0 4
+ length 0
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+!
+!
+!
+!
+!
+!
+telemetry ietf subscription 750
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/environment_sensor
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlan_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies;policy_profile_name=temp_policy_profile/atfpolicymap
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1014
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ewlc/policylist
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/site_tag_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1017
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/q_flash_fault
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1018
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/q_sdcard_fault
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1019
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/platform_sensor_state_update
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1020
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/install_status
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1051
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlan_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1052
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1053
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies;policy_profile_name=temp_policy_profile/atfpolicymap
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1054
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ewlc/policylist
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1056
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/site_tag_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaapevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2112
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2113
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/capwap_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2114
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/capwap_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2116
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/spectrum_aq_table
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2120
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ethernet_if_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2121
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmAPautoRfdot11Data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2122
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrm_measurement
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2125
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdApRf
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 17000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2126
+ encoding encode-tdl
+ filter tdl-transform dfsRadarCounters
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2154
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 361000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2155
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ewlcRadioOperBand
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2156
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ewlcRadioOperBand
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2157
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/apdot11SpectrumData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2158
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/apdot11SpectrumData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2159
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/cdp_cache_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2160
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/cdp_cache_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2161
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdLradIfLoadParameters
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 300000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2162
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/spectrum_device_table
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2163
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_tree_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2164
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_neigh
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2165
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/common_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 359000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dot11_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/smMainData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3014
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_client_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mobility_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 390000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3017
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/sisf_db_mac
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 380000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3111
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/traffic_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 9000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3113
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/client_wsa_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3114
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/location_rssi_measurements
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaclientscanreportevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3211
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaclientevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3212
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dc_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3213
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dc_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 370000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3214
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/policy_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3215
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/policy_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3216
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/traffic_distribution_airtime_latency
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 4321
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdAaaServersStat
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 4322
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltd_sisf_dhcpv4_relay_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/device_hardware;singleton_id=0?device_system_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/ha_infra
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/device_hardware;singleton_id=0/device_inventory
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5015
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/smart_license_state;singleton_id=0/smart_license_usage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/ha_infra
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 180000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5017
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=sman_oper/control_process;fru=BINOS_FRU_RP;slotnum=0;baynum=0;chassisnum=1?plat_core_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5018
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/entity_information
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5019
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ios_oper/platform_component;cname=\"Slot\"?platform_properties
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5020
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/platform_component
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5112
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/interface
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=sman_oper/control_process
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5117
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/client_global_stats_data;singleton_id=0
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5118
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltd_join_count_stat;singleton_id=0
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5119
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_ms_msg_stats_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5120
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/dot11
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6001
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radioWsaInfo
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 900000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6002
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_reset_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 1800000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6004
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmRadSlot
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 1800000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6005
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6007
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmCoverage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6008
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/feature_usage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 3000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7000
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/icapApSrvcStats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7001
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/device_analytics_wsa_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7002
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mobility_global_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7003
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/client_rejection_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 8882
+ encoding encode-tdl
+ filter tdl-transform trustSecCounterDelta
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 90000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry receiver protocol DNAC_ASSURANCE_RECEIVER
+ host ip-address 172.16.103.3 25103
+ protocol tls-native profile sdn-network-infra-iwan
+telemetry transform dfsRadarCounters
+ input table apdot11RadarData
+  field wtp_mac
+  field radio_slot_id
+  field dfs_cisco_ip_cnt
+  field dfs_triggered_cnt
+  field dfs_serving_rad_cnt
+  field dfs_stats_last_updated
+  join-key radio_slot_key_t
+  logical-op and
+  type mandatory
+  uri /services;serviceName=ewlc_oper/apdot11RadarData
+ operation 1
+  filter 1
+   event on-change
+   field apdot11RadarData.dfs_stats_last_updated
+  output-field 1
+   field apdot11RadarData.dfs_cisco_ip_cnt
+  output-field 2
+   field apdot11RadarData.dfs_triggered_cnt
+  output-field 3
+   field apdot11RadarData.dfs_serving_rad_cnt
+  output-field 4
+   field apdot11RadarData.wtp_mac
+  output-field 5
+   field apdot11RadarData.radio_slot_id
+  output-field 6
+   field apdot11RadarData.dfs_stats_last_updated
+ specified
+telemetry transform trustSecCounterDelta
+ input table cts_rolebased_policy
+  field dst_sgt
+  field src_sgt
+  field sgacl_name
+  field monitor_mode
+  field num_of_sgacl
+  field policy_life_time
+  field total_deny_count
+  field last_updated_time
+  field total_permit_count
+  join-key cts_role_based_policy_key
+  logical-op and
+  type mandatory
+  uri /services;serviceName=ios_emul_oper/cts_rolebased_policy
+ operation 1
+  output-field 1
+   field cts_rolebased_policy.src_sgt
+  output-field 2
+   field cts_rolebased_policy.dst_sgt
+  output-field 3
+   field cts_rolebased_policy.total_permit_count
+   output-op type delta
+  output-field 4
+   field cts_rolebased_policy.total_deny_count
+   output-op type delta
+  output-field 5
+   field cts_rolebased_policy.sgacl_name
+  output-field 6
+   field cts_rolebased_policy.monitor_mode
+  output-field 7
+   field cts_rolebased_policy.num_of_sgacl
+  output-field 8
+   field cts_rolebased_policy.policy_life_time
+  output-field 9
+   field cts_rolebased_policy.last_updated_time
+ specified
+wireless aaa policy default-aaa-policy
+wireless cts-sxp profile default-sxp-profile
+wireless management interface Vlan1150
+wireless profile airtime-fairness default-atf-policy 0
+wireless profile flex default-flex-profile
+ description "default flex profile"
+wireless profile mesh default-mesh-profile
+ description "default mesh profile"
+wireless profile multi-bssid default-multi-bssid-profile
+ description "Default multi bssid profile"
+wireless profile radio default-radio-profile
+ description "Preconfigured default radio profile"
+wireless profile policy default-policy-profile
+ description "default policy profile"
+wireless profile policy CXS-SDA1-POD1-Fabric_profile
+ aaa-override
+ accounting-list dnac-acct-CXS-SDA1-P-83359e4a
+ no central dhcp
+ no central switching
+ description CXS-SDA1-POD1-Fabric_profile
+ dhcp-tlv-caching
+ exclusionlist timeout 180
+ http-tlv-caching
+ service-policy input platinum-up
+ service-policy output platinum
+ session-timeout 1800
+ no shutdown
+wireless tag site default-site-tag
+ description "default site tag"
+wireless tag site ST_POD1_Building_43167_0
+ description "Site Tag ST_POD1_Building_43167_0"
+wireless tag policy default-policy-tag
+ description "default policy-tag"
+wireless tag policy PT_POD1_Build_Floor1_7705c
+ description "PolicyTagName PT_POD1_Build_Floor1_7705c"
+ wlan CXS-SDA1-POD1-Fabric_profile policy CXS-SDA1-POD1-Fabric_profile
+wireless tag rf LOW
+ 24ghz-rf-policy Low_Client_Density_rf_24gh
+ 5ghz-rf-policy Low_Client_Density_rf_5gh
+wireless tag rf default-rf-tag
+ description "default RF tag"
+wireless wps rogue network-assurance enable
+wireless wps mfp
+wireless wps mfp ap-impersonation
+wireless fabric
+wireless fabric name VLAN_AP l2-vnid 8205 l3-vnid 4097 ip 192.168.11.128 255.255.255.128 control-plane-name default-control-plane
+wireless fabric name VLAN_EMPLOYEE_2001 l2-vnid 8202 control-plane-name default-control-plane
+wireless fabric name VLAN_EXTENDED_NODE l2-vnid 8204 control-plane-name default-control-plane
+wireless fabric control-plane default-control-plane
+ ip address 192.168.10.65 key 0 a7c9b90ac8f642c6
+ ip address 192.168.10.67 key 0 a7c9b90ac8f642c6
+wireless feature-usage enable
+wireless country FR
+wlan CXS-SDA1-POD1-Fabric_profile 17 CXS-SDA1-POD1-Fabric
+ security dot1x authentication-list dnac-cts-CXS-SDA1-P-83359e4a
+ no shutdown
+network-assurance enable
+network-assurance icap server port 32626
+network-assurance url https://172.16.103.3
+network-assurance na-certificate PROTOCOL_HTTP 172.16.103.3 /ca/ pem
+ap dot11 24ghz rf-profile Low_Client_Density_rf_24gh
+ coverage data rssi threshold -90
+ coverage level 2
+ coverage voice rssi threshold -90
+ description "pre configured Low Client Density rfprofile for 2.4gh radio"
+ high-density rx-sop threshold low
+ rate RATE_12M supported
+ rate RATE_24M supported
+ rate RATE_6M supported
+ tx-power v1 threshold -65
+ no shutdown
+ap dot11 24ghz rf-profile High_Client_Density_rf_24gh
+ description "pre configured High Client Density rfprofile for 2.4gh radio"
+ high-density rx-sop threshold medium
+ rate RATE_11M disable
+ rate RATE_12M mandatory
+ rate RATE_1M disable
+ rate RATE_24M supported
+ rate RATE_2M disable
+ rate RATE_5_5M disable
+ rate RATE_6M disable
+ tx-power min 7
+ no shutdown
+ap dot11 24ghz rf-profile Typical_Client_Density_rf_24gh
+ description "pre configured Typical Client Density rfprofile for 2.4gh radio"
+ rate RATE_11M disable
+ rate RATE_12M mandatory
+ rate RATE_1M disable
+ rate RATE_24M supported
+ rate RATE_2M disable
+ rate RATE_5_5M disable
+ rate RATE_6M disable
+ no shutdown
+ap dot11 24ghz rate RATE_12M supported
+ap dot11 24ghz rate RATE_24M supported
+ap dot11 24ghz rate RATE_6M supported
+ap dot11 6ghz rf-profile default-rf-profile-6ghz
+ description "default rfprofile for 6GHz radio"
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ no shutdown
+ap dot11 5ghz rf-profile Low_Client_Density_rf_5gh
+ coverage data rssi threshold -90
+ coverage level 2
+ coverage voice rssi threshold -90
+ description "pre configured Low Client Density rfprofile for 5gh radio"
+ high-density rx-sop threshold low
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ tx-power v1 threshold -60
+ no shutdown
+ap dot11 5ghz rf-profile High_Client_Density_rf_5gh
+ description "pre configured High Client Density rfprofile for 5gh radio"
+ high-density rx-sop threshold medium
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M disable
+ rate RATE_9M disable
+ tx-power min 7
+ tx-power v1 threshold -65
+ no shutdown
+ap dot11 5ghz rf-profile Typical_Client_Density_rf_5gh
+ description "pre configured Typical Density rfprofile for 5gh radio"
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ no shutdown
+ap dot11 5ghz rate RATE_12M mandatory
+ap dot11 5ghz rate RATE_24M mandatory
+ap dot11 5ghz rate RATE_6M mandatory
+ap dot11 6ghz rrm monitor measurement 600
+ap tag-source-priority 2 source filter
+ap tag-source-priority 3 source ap
+ap profile default-ap-profile
+ description "default ap profile"
+ mgmtuser username admin password 0 cisco!123 secret 0 cisco!123
+ ntp ip 0.0.0.0
+ syslog host 255.255.255.255
+ap 8c1e.80fd.6440
+ policy-tag PT_POD1_Build_Floor1_7705c
+ rf-tag LOW
+ site-tag ST_POD1_Building_43167_0
+trapflags ap crash
+trapflags ap noradiocards
+trapflags ap register
+netconf-yang
+end
+
+CXS-SDA1-WLC1#sh run | s 192.168.10.65
+ ip address 192.168.10.65 key 0 a7c9b90ac8f642c6
+CXS-SDA1-WLC1#sh run | i 192.168.10.65
+ ip address 192.168.10.65 key 0 a7c9b90ac8f642c6
+CXS-SDA1-WLC1#sh run                  
+Building configuration...
+
+Current configuration : 51196 bytes
+!
+! Last configuration change at 18:58:12 UTC Fri Dec 13 2024 by admin
+!
+version 17.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname CXS-SDA1-WLC1
+!
+boot-start-marker
+boot system bootflash:packages.conf
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+aaa new-model
+!
+!
+aaa group server radius dnac-acct-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa group server radius dnac-rGrp-CXS-SDA1-P-83359e4a
+ server name dnac-radius_172.16.200.2
+ ip radius source-interface Vlan1150
+!
+aaa authentication login default local
+aaa authentication dot1x default local
+aaa authentication dot1x dnac-cts-CXS-SDA1-P-83359e4a group dnac-rGrp-CXS-SDA1-P-83359e4a
+aaa authorization exec default local 
+aaa accounting update newinfo periodic 2880
+aaa accounting identity dnac-acct-CXS-SDA1-P-83359e4a start-stop group dnac-acct-CXS-SDA1-P-83359e4a
+!
+!
+aaa server radius dynamic-author
+ client 172.16.200.2 server-key cisco!123
+!
+aaa session-id common
+!
+!
+!
+!
+!
+!
+!
+ip name-server 172.16.200.4
+ip domain name cx-south-sda.lab
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+vtp mode off
+vtp version 1
+! 
+! 
+! 
+! 
+!
+!
+access-session mac-move deny
+multilink bundle-name authenticated
+!
+pae
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+ hash sha256
+!
+crypto pki trustpoint TP-self-signed-2227976997
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2227976997
+ revocation-check none
+ rsakeypair TP-self-signed-2227976997
+ hash sha256
+!
+crypto pki trustpoint DNAC-CA
+ enrollment mode ra
+ enrollment terminal
+ usage ssl-client
+ revocation-check crl none
+ source interface Vlan1150
+ hash sha256
+!
+crypto pki trustpoint sdn-network-infra-iwan
+ enrollment url http://172.16.103.3:80/ejbca/publicweb/apply/scep/sdnscep
+ fqdn CXS-SDA1-WLC1.cx-south-sda.lab
+ subject-name CN=C9800-L-F-K9_FCL263900VV_sdn-network-infra-iwan
+ subject-alt-name CXS-SDA1-WLC1.cx-south-sda.lab
+ revocation-check crl
+ source interface Vlan1150
+ rsakeypair sdn-network-infra-iwan
+ auto-enroll 80 regenerate
+ hash sha256
+!
+!
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+        quit
+crypto pki certificate chain TP-self-signed-2227976997
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 32323237 39373639 3937301E 170D3137 30313032 31373235 
+  33365A17 0D323730 31303231 37323533 365A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 32323739 
+  37363939 37308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100C7E2 A9C7DEEB D572AD52 B8FC4A39 66156A01 0D3CB83A 1A7DC6A9 
+  FACDFD6E F1A417F1 11D82CA1 E301303B 0E16F9D1 7B1C3862 DD88511B D7DBDD9F 
+  6ED703AD 0667213D 133CB36A 725E9E05 F334CBFD 41F070F1 5A7853B0 6E564E65 
+  53E26732 BC3FD072 66CE7AE3 F770D7BC 354A522D 41380FE5 A0F4D61F 30765909 
+  A7AB3966 BBC56C32 C2C2F3E8 AE7CB4B7 99EA5A5A E654323F CEB3F2AB 1C9EF26A 
+  BEC76675 C8A4CF1C 2F15A4AB 55BE1C53 F63180D3 CF69CB93 D668E1F7 C51FAB36 
+  ED1EB7F4 B9E9C7E8 EE779557 455513C1 0D598F62 24C90E15 F1677656 D59A5086 
+  17A8C306 1849D775 C88FA886 8662AFA8 95F13AD5 F4900E70 19699E0B CA766B78 
+  22CB1B91 08A10203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14DA2BEB 513CA3E8 A0FF9B66 A0A03510 A4C14CE4 
+  24301D06 03551D0E 04160414 DA2BEB51 3CA3E8A0 FF9B66A0 A03510A4 C14CE424 
+  300D0609 2A864886 F70D0101 05050003 82010100 AA849FB5 5627A580 4F573B53 
+  54899C30 D0C642DF 0F6B7D80 EC96E85F 63A7D766 850CE784 D9DD4DD0 6C9559AD 
+  6EC61AC4 77B29023 5CC63E69 3452FB77 131F1CD6 648D960F 99AECA06 D45690B3 
+  E1242B39 04552DDA C6EFF83A 7EBFD6EE 2FDD1B30 AF92386B 4FF23980 DE2A6919 
+  7EBB7A52 065F7DF4 3B373136 57FB07C0 CA3C52A0 C30A2A7F 7E8E8B06 C738AF92 
+  F8603B96 3517DADA 0D78F2A7 CB41B083 37868BD8 4CF755AB E2597B88 043A1B96 
+  E42EA685 40F03A95 628289FA 803C7D8D F9F83CAF 2081FFA8 E5B9AB93 E4F6788C 
+  24AFF3EA BF676036 A0F94D58 E075C364 0C1A878F 78AF0FA9 F57A39FC 2C6094EA 
+  55DB8B1F 7FFD4A20 6E0993E2 E44A9F60 E5810219
+        quit
+crypto pki certificate chain DNAC-CA
+ certificate ca 13C68DB916CEE48F40B159BC2E75F14F
+  30820375 3082025D A0030201 02021013 C68DB916 CEE48F40 B159BC2E 75F14F30 
+  0D06092A 864886F7 0D01010B 0500304D 31133011 060A0992 268993F2 2C640119 
+  16036C61 62311C30 1A060A09 92268993 F22C6401 19160C63 782D736F 7574682D 
+  73646131 18301606 03550403 130F6378 2D736F75 74682D73 64612D43 41301E17 
+  0D323431 30303832 32313634 345A170D 32393130 30383232 32363434 5A304D31 
+  13301106 0A099226 8993F22C 64011916 036C6162 311C301A 060A0992 268993F2 
+  2C640119 160C6378 2D736F75 74682D73 64613118 30160603 55040313 0F63782D 
+  736F7574 682D7364 612D4341 30820122 300D0609 2A864886 F70D0101 01050003 
+  82010F00 3082010A 02820101 00C1A5D4 0C29516B 40D7D857 0C9B6904 751B107B 
+  6A7886F0 6472EE12 C659FAD0 AC40F266 3B42BED1 F073A2E1 36CF53F3 19EF7385 
+  4F293890 0D8C053F F077F8D4 4740F3EC 68C6BAAE D11EF1C2 2E5BB5E0 4EE8340A 
+  67EEA374 1592E884 803E11E7 B05792C9 BE8B1904 22695ACF 9251ED79 6F4B24BB 
+  C883F6FB F64EF14C 3614D1C3 C25E3864 EFD347FD EB4877B3 DAF4796B F3F5694C 
+  8FDD8BE0 CD3B2F71 7313E65B 4FBA978B DBE8F70A 8C648E98 0CF4EB30 AF98D279 
+  10BDE4B3 DAE23302 0C7D1736 84D8964F CBDA6F36 9D3C4934 C91104E9 4CE7DE13 
+  5E3B2071 A3C01F7F 2B31A748 9988AE2D 63ECBB78 61869CEF 896276AD EF93288A 
+  FDD819D1 5C0D7077 50415DB8 15020301 0001A351 304F300B 0603551D 0F040403 
+  02018630 0F060355 1D130101 FF040530 030101FF 301D0603 551D0E04 160414F0 
+  6EC25FA1 34DA1DBD 2FABBAC5 2C4348C6 667CCC30 1006092B 06010401 82371501 
+  04030201 00300D06 092A8648 86F70D01 010B0500 03820101 0089B17C DADC6DB3 
+  B03220F9 28A63785 8A938F28 6422B930 FBAE37C5 751E2AE8 A8EE794E DBF8009B 
+  0D7C0BA8 EAAB456B DD07FA4C 5B30AA68 C9B96D82 F6F17C04 E98F41E8 63496A5F 
+  F3FA2EE2 89A9041D 39936486 FD8F000F 182B1FC6 C7458155 17EBC6AE BCBF2FF0 
+  E04703AA B93F8DED E6677215 16BC32F9 3ACF712C A8F66B70 3F2121D1 F8A0F4E8 
+  4439BBD9 207E03E2 B7FBFE82 96FDD866 6275B024 8883F4D0 2ADF7493 98328C5C 
+  192A883D 35C34951 96DBF94F 177CB2FC CA030C45 77C44EAD 995DC446 85A316F0 
+  72F09C03 EF9A0845 FF75B9C4 78CC6082 22074F9F 32F665E9 2AE59865 189095FE 
+  04B73AFB 112128E3 5B7175DE 53988496 AB41D077 4843263C CA
+        quit
+crypto pki certificate chain sdn-network-infra-iwan
+ certificate 42D5B8ECD65C5757
+  30820389 30820271 A0030201 02020842 D5B8ECD6 5C575730 0D06092A 864886F7 
+  0D01010D 0500301F 311D301B 06035504 030C1473 646E2D6E 6574776F 726B2D69 
+  6E667261 2D636130 1E170D32 34313230 32313633 3031355A 170D3235 31323032 
+  31363330 31355A30 69312D30 2B06092A 864886F7 0D010902 0C1E4358 532D5344 
+  41312D57 4C43312E 63782D73 6F757468 2D736461 2E6C6162 31383036 06035504 
+  030C2F43 39383030 2D4C2D46 2D4B395F 46434C32 36333930 3056565F 73646E2D 
+  6E657477 6F726B2D 696E6672 612D6977 616E3082 0122300D 06092A86 4886F70D 
+  01010105 00038201 0F003082 010A0282 010100A9 5800DC00 166BC1DF 7C2EF804 
+  3534961D 544D8BAE A7033583 38D2A206 53406179 E7E2F021 53FFCE75 78771035 
+  E7D804AB 43F168FA A6D8DA3E 373516D9 2E020390 6DE08AD9 B9AC6C28 42B38C86 
+  E52F4FF8 4A64D44C AA846656 47BB719B 7176427E F4BC9E92 969D2DD6 704DC164 
+  BCF67FE3 C5F0DC88 736E9C10 8EF654C8 BD2DCD26 7E6D6C3A C732A092 92E2AF76 
+  7F8572AF 3746223E 631D93D2 1490663A 33BA3E36 0D95F364 DA376789 10C5A458 
+  41F891A4 1A2293FF 905FD667 3C27096F 1DC43D71 64245670 9A6D8C6C E29FBACE 
+  C432F7DF 68B3A57C 2D4C945A BA8B437F 5658C053 2A27214B AB98D654 E368E1B9 
+  11FD8CBC 5A4B4431 51CF1FCF 17CABB44 5A35A902 03010001 A37F307D 300C0603 
+  551D1301 01FF0402 3000301F 0603551D 23041830 16801484 D9D8ED20 E4C8AE9F 
+  647E37BD A91735B0 0EC03530 1D060355 1D250416 30140608 2B060105 05070302 
+  06082B06 01050507 0304301D 0603551D 0E041604 14C41D37 5289734A F62DB5A9 
+  28B281CD 4A04BE65 56300E06 03551D0F 0101FF04 04030205 E0300D06 092A8648 
+  86F70D01 010D0500 03820101 00064E02 4B67110F 6501E0C0 86FDE4D3 D8269AA9 
+  DB42170E 7F530378 22DB82E5 404C9FF6 AE099A71 2305812B 2AEA8C61 82766ECB 
+  DDB4FFB2 3A28EF04 117B1D84 86562FAD B205820F E77979D2 785E27E5 F4CBA498 
+  8AC4F039 E7D82F73 48E78A01 6645A80F 048238DF 4F8EDAAC A8B9BA6C 7B37A5F9 
+  8493B450 73E5532A E8EC14C1 C545115B 18D7F9E6 6FAB2681 22DCF83B F7434C5E 
+  AB1413BC 4B3B3759 8D0D725D 9718206A 179BA2DD A182D3E9 FBE5CB15 515AD2E5 
+  450DDBF3 5245A63D 137BB1C6 38AB4E9C 8595F6FA 6BBD1BDF 5D6A7570 B918B76C 
+  16EBB45F 18E68AB1 86C114D6 742A4D66 0AEAF7F2 2A7D56A8 3984DFBD AEA7B09D 
+  0B37417D DB55F3CC 5F3EAE5F 4D
+        quit
+ certificate ca 7769C3DFF410625D
+  30820323 3082020B A0030201 02020877 69C3DFF4 10625D30 0D06092A 864886F7 
+  0D01010D 0500301F 311D301B 06035504 030C1473 646E2D6E 6574776F 726B2D69 
+  6E667261 2D636130 1E170D32 34303231 36313635 3035335A 170D3239 30323134 
+  31363530 35335A30 1F311D30 1B060355 04030C14 73646E2D 6E657477 6F726B2D 
+  696E6672 612D6361 30820122 300D0609 2A864886 F70D0101 01050003 82010F00 
+  3082010A 02820101 00B64F81 0096E72D DA89B93B 31B661B6 C37459FA 1B92BCA4 
+  BABEBCB6 E67BF921 E4A95BBD 4FBF49F7 08D3674F 6D66DA4F F2863E18 BD058898 
+  12D8D2FD 1EE3023A 0CB8AFA6 C5655F3B 1A9F2D36 3DE88FAF 91ADCF0A 82889733 
+  5617FFA1 A8534B8F BBD55CD7 756D438D B9BB5ECC 0DF25B86 970BEEA6 A1B54C3C 
+  0CAD4217 78B114E3 01CEC0C8 92DC86B2 D071BDAF E6D28F65 F2C48DCB 78B2FDBC 
+  9824EFE6 9B3F031F 78B99AC4 F887D837 B613CE8D D3F4A25F 2D2E93A5 196057CB 
+  008D8A7C 66851B34 AA6EB713 15243B15 961FEAA5 5308668C 1AB90705 FFAA31BD 
+  EB0731A0 4490011C DFF2BB83 3EF61CFF FBA0C274 4EFFEBAE 84F63E50 8FB7E2B7 
+  0880E5BF C64F7B99 6F020301 0001A363 3061300F 0603551D 130101FF 04053003 
+  0101FF30 1F060355 1D230418 30168014 84D9D8ED 20E4C8AE 9F647E37 BDA91735 
+  B00EC035 301D0603 551D0E04 16041484 D9D8ED20 E4C8AE9F 647E37BD A91735B0 
+  0EC03530 0E060355 1D0F0101 FF040403 02018630 0D06092A 864886F7 0D01010D 
+  05000382 01010000 83C65B12 3DE0CD92 CAC802E3 5F39DC50 02E372EB 3AFE4E98 
+  FA120F86 6F33916E A2D15DF7 4F8C5ED6 1942A8F0 98B9B9FD BCD9B06D 9E7155BD 
+  1FDCF153 C95B4252 73378A0F CE1FB7FE E50BAC8A B7A05DCA 7AF79F86 B975F0A2 
+  DA0DA74C 8646E5AA 69A77F4B 88965C25 22631D7D 7553B230 955DDC04 2973BA1E 
+  08FC09F8 4EA401A6 AA13C4AA CA9DB905 5AFE6079 CF085287 C07C9B7F 53C82E10 
+  112827C3 DF2FDC61 E1669CFF 663B3DFD CDF2C32F E9067944 9778AEE9 EC72BE52 
+  0FCD2886 DF5A06B1 E4159DA7 726FD8D7 B44909BC 6D1C9CB4 2E70FC2D 0D02B97E 
+  04932EE5 0E50C8F8 EDAA0D78 28EFF1DD 7E1BD698 7BA6325A E40F53AC F6009D45 
+  7CD2B318 F32AA6
+        quit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+service-template DEFAULT_LINKSEC_POLICY_MUST_SECURE
+ linksec policy must-secure
+service-template DEFAULT_LINKSEC_POLICY_SHOULD_SECURE
+ linksec policy should-secure
+service-template DEFAULT_CRITICAL_VOICE_TEMPLATE
+ voice vlan
+service-template DEFAULT_CRITICAL_DATA_TEMPLATE
+service-template webauth-global-inactive
+ inactivity-timer 3600 
+memory free low-watermark processor 170271
+device classifier
+license udi pid C9800-L-F-K9 sn FCL263900NM
+license smart transport off
+diagnostic bootup level minimal
+!
+!
+!
+username admin privilege 15 secret 9 $9$fq9ZrUeZ829BCE$0K4RCVjCK5vFlOHJkaBPNWj9RvvHvR8dn1tUyytknW2
+!
+redundancy
+ mode sso
+!
+crypto engine compliance shield disable
+!
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+vlan 1150
+ name Management
+!
+!
+class-map match-any AVC-Reanchor-Class
+ match protocol cisco-jabber-audio
+ match protocol cisco-jabber-video
+ match protocol webex-media
+ match protocol webex-app-sharing
+ match protocol webex-control
+ match protocol webex-meeting
+ match protocol wifi-calling
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Port-channel1
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+!
+interface TwoGigabitEthernet0/0/0
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/1
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/2
+ negotiation auto
+ no snmp trap link-status
+!
+interface TwoGigabitEthernet0/0/3
+ negotiation auto
+ no snmp trap link-status
+!
+interface TenGigabitEthernet0/1/0
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+ negotiation auto
+ no snmp trap link-status
+ channel-group 1 mode desirable
+!
+interface TenGigabitEthernet0/1/1
+ switchport trunk allowed vlan 1150
+ switchport mode trunk
+ no negotiation auto
+ no snmp trap link-status
+ channel-group 1 mode desirable
+!
+interface GigabitEthernet0
+ description To MGMT
+ vrf forwarding Mgmt-intf
+ ip address 172.16.66.31 255.255.255.0
+ negotiation auto
+!
+interface Vlan1
+ no ip address
+ no ip proxy-arp
+!
+interface Vlan1150
+ ip address 172.16.103.9 255.255.255.248
+ no ip proxy-arp
+!
+ip forward-protocol nd
+no ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface Vlan1150
+ip ssh bulk-mode 131072
+ip ssh source-interface Vlan1150
+ip route 0.0.0.0 0.0.0.0 172.16.103.10
+ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 172.16.66.1
+!         
+!
+!
+logging source-interface Vlan1150
+logging host 172.16.103.3
+!
+snmp-server group default v3 priv 
+snmp-server group DNACGROUPAuthPriv v3 priv read DNAC-ACCESS write DNAC-ACCESS 
+snmp-server view DNAC-ACCESS iso included
+snmp-server trap-source Vlan1150
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps flowmon
+snmp-server enable traps pfr
+snmp-server enable traps ds1
+snmp-server enable traps entity-perf throughput-notif
+snmp-server enable traps wiredguest wired_guest
+snmp-server enable traps wireless bsnMobileStation bsnAutoRF bsnGeneral rogue MESH wireless_mobility RRM SI tunnel
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps casa
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps eigrp
+snmp-server enable traps pki
+snmp-server enable traps entity-sensor
+snmp-server enable traps entity
+snmp-server enable traps smart-license
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps aaa_server
+snmp-server enable traps atm subif
+snmp-server enable traps entity-qfp mem-res-thresh throughput-notif
+snmp-server enable traps entity-state
+snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+snmp-server enable traps ethernet evc status create delete
+snmp-server enable traps ether-oam
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps flash insertion removal lowspace
+snmp-server enable traps adslline
+snmp-server enable traps vdsl2line
+snmp-server enable traps netsync
+snmp-server enable traps ptp
+snmp-server enable traps lost-ptp-slave
+snmp-server enable traps breach-ptp-offset-threshold
+snmp-server enable traps srp
+snmp-server enable traps entity-diag boot-up-fail hm-test-recover hm-thresh-reached scheduled-test-fail
+snmp-server enable traps cnpd
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+snmp-server enable traps isdn ietf
+snmp-server enable traps sonet
+snmp-server enable traps dlsw
+snmp-server enable traps resource-policy
+snmp-server enable traps bgp cbgp2
+snmp-server enable traps nhrp nhs
+snmp-server enable traps nhrp nhc
+snmp-server enable traps nhrp nhp
+snmp-server enable traps nhrp quota-exceeded
+snmp-server enable traps ipsla
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps dhcp
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps fru-ctrl
+snmp-server enable traps event-manager
+snmp-server enable traps frame-relay
+snmp-server enable traps frame-relay subif
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps ipmulticast
+snmp-server enable traps msdp
+snmp-server enable traps mvpn
+snmp-server enable traps rsvp
+snmp-server enable traps ip local pool
+snmp-server enable traps syslog
+snmp-server enable traps ospfv3 state-change
+snmp-server enable traps ospfv3 errors
+snmp-server enable traps pppoe
+snmp-server enable traps cpu threshold
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps l2tun tunnel
+snmp-server enable traps pimstdmib neighbor-loss invalid-register invalid-join-prune rp-mapping-change interface-election
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps envmon
+snmp-server enable traps ike policy add
+snmp-server enable traps ike policy delete
+snmp-server enable traps ike tunnel start
+snmp-server enable traps ike tunnel stop
+snmp-server enable traps ipsec cryptomap add
+snmp-server enable traps ipsec cryptomap delete
+snmp-server enable traps ipsec cryptomap attach
+snmp-server enable traps ipsec cryptomap detach
+snmp-server enable traps ipsec tunnel start
+snmp-server enable traps ipsec tunnel stop
+snmp-server enable traps ipsec too-many-sas
+snmp-server enable traps gdoi gm-start-registration
+snmp-server enable traps gdoi gm-registration-complete
+snmp-server enable traps gdoi gm-re-register
+snmp-server enable traps gdoi gm-rekey-rcvd
+snmp-server enable traps gdoi gm-rekey-fail
+snmp-server enable traps gdoi ks-rekey-pushed
+snmp-server enable traps gdoi gm-incomplete-cfg
+snmp-server enable traps gdoi ks-no-rsa-keys
+snmp-server enable traps gdoi ks-new-registration
+snmp-server enable traps gdoi ks-reg-complete
+snmp-server enable traps gdoi ks-role-change
+snmp-server enable traps gdoi ks-gm-deleted
+snmp-server enable traps gdoi ks-peer-reachable
+snmp-server enable traps gdoi ks-peer-unreachable
+snmp-server enable traps lisp
+snmp-server enable traps sbc adj-status
+snmp-server enable traps sbc blacklist
+snmp-server enable traps sbc congestion-alarm
+snmp-server enable traps sbc h248-ctrlr-status
+snmp-server enable traps sbc media-source
+snmp-server enable traps sbc radius-conn-status
+snmp-server enable traps sbc sla-violation
+snmp-server enable traps sbc sla-violation-rev1
+snmp-server enable traps sbc svc-state
+snmp-server enable traps sbc qos-statistics
+snmp-server enable traps bfd
+snmp-server enable traps mpls rfc ldp
+snmp-server enable traps mpls ldp
+snmp-server enable traps mpls rfc traffic-eng
+snmp-server enable traps mpls traffic-eng
+snmp-server enable traps mpls fast-reroute protected
+snmp-server enable traps otn
+snmp-server enable traps pw vc
+snmp-server enable traps dial
+snmp-server enable traps diameter
+snmp-server enable traps dsp card-status
+snmp-server enable traps dsp oper-state
+snmp-server enable traps dsp video-usage
+snmp-server enable traps dsp video-out-of-resource
+snmp-server enable traps frame-relay multilink bundle-mismatch
+snmp-server enable traps alarms informational
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server enable traps ethernet cfm alarm
+snmp-server enable traps transceiver all
+snmp-server enable traps rf
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps vlan-membership
+snmp-server enable traps mpls vpn
+snmp-server enable traps mpls rfc vpn
+snmp-server enable traps voice
+snmp-server host 172.16.103.3 version 3 priv cisco 
+snmp-server manager
+!
+!
+!
+radius-server attribute 6 on-for-login-auth
+radius-server attribute 6 support-multiple
+radius-server attribute 8 include-in-access-req
+radius-server attribute 25 access-request include
+radius-server dead-criteria time 5 tries 3
+radius-server deadtime 3
+!
+radius server dnac-radius_172.16.200.2
+ address ipv4 172.16.200.2 auth-port 1812 acct-port 1813
+ timeout 4
+ retransmit 3
+ pac key cisco!123
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+line vty 0 4
+ length 0
+ transport input ssh
+line vty 5 15
+ transport input ssh
+!
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+!
+!
+!
+!
+!
+!
+telemetry ietf subscription 750
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/environment_sensor
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlan_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies;policy_profile_name=temp_policy_profile/atfpolicymap
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1014
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ewlc/policylist
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/site_tag_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1017
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/q_flash_fault
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1018
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/q_sdcard_fault
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1019
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/platform_sensor_state_update
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1020
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=iosevent/install_status
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1051
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlan_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1052
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1053
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/wlanpolicies;policy_profile_name=temp_policy_profile/atfpolicymap
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1054
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ewlc/policylist
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 1056
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/site_tag_config
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaapevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2112
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2113
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/capwap_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2114
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/capwap_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2116
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/spectrum_aq_table
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2120
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ethernet_if_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2121
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmAPautoRfdot11Data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2122
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrm_measurement
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2125
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdApRf
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 17000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2126
+ encoding encode-tdl
+ filter tdl-transform dfsRadarCounters
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2154
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 361000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2155
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ewlcRadioOperBand
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2156
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/ewlcRadioOperBand
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2157
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/apdot11SpectrumData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2158
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/apdot11SpectrumData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2159
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/cdp_cache_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2160
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/cdp_cache_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2161
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdLradIfLoadParameters
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 300000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2162
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/spectrum_device_table
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2163
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_tree_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2164
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_neigh
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 2165
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mesh_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/common_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 359000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dot11_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/smMainData
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3014
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_client_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mobility_oper_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 390000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3017
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/sisf_db_mac
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 380000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3111
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/traffic_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 9000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3113
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/client_wsa_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3114
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/location_rssi_measurements
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaclientscanreportevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3211
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlcevent/wsaclientevent
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3212
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dc_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3213
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/dc_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 370000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3214
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/policy_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3215
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/policy_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 360000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 3216
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/traffic_distribution_airtime_latency
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 4321
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltdAaaServersStat
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 4322
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltd_sisf_dhcpv4_relay_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5011
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/device_hardware;singleton_id=0?device_system_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5012
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/ha_infra
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5013
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/device_hardware;singleton_id=0/device_inventory
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5015
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/smart_license_state;singleton_id=0/smart_license_usage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5016
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/ha_infra
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 180000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5017
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=sman_oper/control_process;fru=BINOS_FRU_RP;slotnum=0;baynum=0;chassisnum=1?plat_core_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5018
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/entity_information
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5019
+ encoding encode-tdl
+ filter nested-uri /services;serviceName=ios_oper/platform_component;cname=\"Slot\"?platform_properties
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5020
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_oper/platform_component
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5112
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ios_emul_oper/interface
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5115
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=sman_oper/control_process
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5117
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/client_global_stats_data;singleton_id=0
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5118
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper_emul/emltd_join_count_stat;singleton_id=0
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5119
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/lisp_agent_ms_msg_stats_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 5120
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc/dot11
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6001
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radioWsaInfo
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 900000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6002
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_reset_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 1800000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6004
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmRadSlot
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 1800000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6005
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/radio_oper_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6007
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/rrmCoverage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 6008
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/feature_usage
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 3000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7000
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/icapApSrvcStats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7001
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/device_analytics_wsa_info
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy on-change
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7002
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/mobility_global_stats
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 7003
+ encoding encode-tdl
+ filter tdl-uri /services;serviceName=ewlc_oper/client_rejection_data
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 30000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry ietf subscription 8882
+ encoding encode-tdl
+ filter tdl-transform trustSecCounterDelta
+ receiver-type protocol
+ source-address 172.16.103.9
+ stream native
+ update-policy periodic 90000
+ receiver name DNAC_ASSURANCE_RECEIVER
+telemetry receiver protocol DNAC_ASSURANCE_RECEIVER
+ host ip-address 172.16.103.3 25103
+ protocol tls-native profile sdn-network-infra-iwan
+telemetry transform dfsRadarCounters
+ input table apdot11RadarData
+  field wtp_mac
+  field radio_slot_id
+  field dfs_cisco_ip_cnt
+  field dfs_triggered_cnt
+  field dfs_serving_rad_cnt
+  field dfs_stats_last_updated
+  join-key radio_slot_key_t
+  logical-op and
+  type mandatory
+  uri /services;serviceName=ewlc_oper/apdot11RadarData
+ operation 1
+  filter 1
+   event on-change
+   field apdot11RadarData.dfs_stats_last_updated
+  output-field 1
+   field apdot11RadarData.dfs_cisco_ip_cnt
+  output-field 2
+   field apdot11RadarData.dfs_triggered_cnt
+  output-field 3
+   field apdot11RadarData.dfs_serving_rad_cnt
+  output-field 4
+   field apdot11RadarData.wtp_mac
+  output-field 5
+   field apdot11RadarData.radio_slot_id
+  output-field 6
+   field apdot11RadarData.dfs_stats_last_updated
+ specified
+telemetry transform trustSecCounterDelta
+ input table cts_rolebased_policy
+  field dst_sgt
+  field src_sgt
+  field sgacl_name
+  field monitor_mode
+  field num_of_sgacl
+  field policy_life_time
+  field total_deny_count
+  field last_updated_time
+  field total_permit_count
+  join-key cts_role_based_policy_key
+  logical-op and
+  type mandatory
+  uri /services;serviceName=ios_emul_oper/cts_rolebased_policy
+ operation 1
+  output-field 1
+   field cts_rolebased_policy.src_sgt
+  output-field 2
+   field cts_rolebased_policy.dst_sgt
+  output-field 3
+   field cts_rolebased_policy.total_permit_count
+   output-op type delta
+  output-field 4
+   field cts_rolebased_policy.total_deny_count
+   output-op type delta
+  output-field 5
+   field cts_rolebased_policy.sgacl_name
+  output-field 6
+   field cts_rolebased_policy.monitor_mode
+  output-field 7
+   field cts_rolebased_policy.num_of_sgacl
+  output-field 8
+   field cts_rolebased_policy.policy_life_time
+  output-field 9
+   field cts_rolebased_policy.last_updated_time
+ specified
+wireless aaa policy default-aaa-policy
+wireless cts-sxp profile default-sxp-profile
+wireless management interface Vlan1150
+wireless profile airtime-fairness default-atf-policy 0
+wireless profile flex default-flex-profile
+ description "default flex profile"
+wireless profile mesh default-mesh-profile
+ description "default mesh profile"
+wireless profile multi-bssid default-multi-bssid-profile
+ description "Default multi bssid profile"
+wireless profile radio default-radio-profile
+ description "Preconfigured default radio profile"
+wireless profile policy default-policy-profile
+ description "default policy profile"
+wireless profile policy CXS-SDA1-POD1-Fabric_profile
+ aaa-override
+ accounting-list dnac-acct-CXS-SDA1-P-83359e4a
+ no central dhcp
+ no central switching
+ description CXS-SDA1-POD1-Fabric_profile
+ dhcp-tlv-caching
+ exclusionlist timeout 180
+ http-tlv-caching
+ service-policy input platinum-up
+ service-policy output platinum
+ session-timeout 1800
+ no shutdown
+wireless tag site default-site-tag
+ description "default site tag"
+wireless tag site ST_POD1_Building_43167_0
+ description "Site Tag ST_POD1_Building_43167_0"
+wireless tag policy default-policy-tag
+ description "default policy-tag"
+wireless tag policy PT_POD1_Build_Floor1_7705c
+ description "PolicyTagName PT_POD1_Build_Floor1_7705c"
+ wlan CXS-SDA1-POD1-Fabric_profile policy CXS-SDA1-POD1-Fabric_profile
+wireless tag rf LOW
+ 24ghz-rf-policy Low_Client_Density_rf_24gh
+ 5ghz-rf-policy Low_Client_Density_rf_5gh
+wireless tag rf default-rf-tag
+ description "default RF tag"
+wireless wps rogue network-assurance enable
+wireless wps mfp
+wireless wps mfp ap-impersonation
+wireless fabric
+wireless fabric name VLAN_AP l2-vnid 8205 l3-vnid 4097 ip 192.168.11.128 255.255.255.128 control-plane-name default-control-plane
+wireless fabric name VLAN_EMPLOYEE_2001 l2-vnid 8202 control-plane-name default-control-plane
+wireless fabric name VLAN_EXTENDED_NODE l2-vnid 8204 control-plane-name default-control-plane
+wireless fabric control-plane default-control-plane
+ ip address 192.168.10.65 key 0 a7c9b90ac8f642c6
+ ip address 192.168.10.67 key 0 a7c9b90ac8f642c6
+wireless feature-usage enable
+wireless country FR
+wlan CXS-SDA1-POD1-Fabric_profile 17 CXS-SDA1-POD1-Fabric
+ security dot1x authentication-list dnac-cts-CXS-SDA1-P-83359e4a
+ no shutdown
+network-assurance enable
+network-assurance icap server port 32626
+network-assurance url https://172.16.103.3
+network-assurance na-certificate PROTOCOL_HTTP 172.16.103.3 /ca/ pem
+ap dot11 24ghz rf-profile Low_Client_Density_rf_24gh
+ coverage data rssi threshold -90
+ coverage level 2
+ coverage voice rssi threshold -90
+ description "pre configured Low Client Density rfprofile for 2.4gh radio"
+ high-density rx-sop threshold low
+ rate RATE_12M supported
+ rate RATE_24M supported
+ rate RATE_6M supported
+ tx-power v1 threshold -65
+ no shutdown
+ap dot11 24ghz rf-profile High_Client_Density_rf_24gh
+ description "pre configured High Client Density rfprofile for 2.4gh radio"
+ high-density rx-sop threshold medium
+ rate RATE_11M disable
+ rate RATE_12M mandatory
+ rate RATE_1M disable
+ rate RATE_24M supported
+ rate RATE_2M disable
+ rate RATE_5_5M disable
+ rate RATE_6M disable
+ tx-power min 7
+ no shutdown
+ap dot11 24ghz rf-profile Typical_Client_Density_rf_24gh
+ description "pre configured Typical Client Density rfprofile for 2.4gh radio"
+ rate RATE_11M disable
+ rate RATE_12M mandatory
+ rate RATE_1M disable
+ rate RATE_24M supported
+ rate RATE_2M disable
+ rate RATE_5_5M disable
+ rate RATE_6M disable
+ no shutdown
+ap dot11 24ghz rate RATE_12M supported
+ap dot11 24ghz rate RATE_24M supported
+ap dot11 24ghz rate RATE_6M supported
+ap dot11 6ghz rf-profile default-rf-profile-6ghz
+ description "default rfprofile for 6GHz radio"
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ no shutdown
+ap dot11 5ghz rf-profile Low_Client_Density_rf_5gh
+ coverage data rssi threshold -90
+ coverage level 2
+ coverage voice rssi threshold -90
+ description "pre configured Low Client Density rfprofile for 5gh radio"
+ high-density rx-sop threshold low
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ tx-power v1 threshold -60
+ no shutdown
+ap dot11 5ghz rf-profile High_Client_Density_rf_5gh
+ description "pre configured High Client Density rfprofile for 5gh radio"
+ high-density rx-sop threshold medium
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M disable
+ rate RATE_9M disable
+ tx-power min 7
+ tx-power v1 threshold -65
+ no shutdown
+ap dot11 5ghz rf-profile Typical_Client_Density_rf_5gh
+ description "pre configured Typical Density rfprofile for 5gh radio"
+ rate RATE_12M mandatory
+ rate RATE_24M mandatory
+ rate RATE_6M mandatory
+ no shutdown
+ap dot11 5ghz rate RATE_12M mandatory
+ap dot11 5ghz rate RATE_24M mandatory
+ap dot11 5ghz rate RATE_6M mandatory
+ap dot11 6ghz rrm monitor measurement 600
+ap tag-source-priority 2 source filter
+ap tag-source-priority 3 source ap
+ap profile default-ap-profile
+ description "default ap profile"
+ mgmtuser username admin password 0 cisco!123 secret 0 cisco!123
+ ntp ip 0.0.0.0
+ syslog host 255.255.255.255
+ap 8c1e.80fd.6440
+ policy-tag PT_POD1_Build_Floor1_7705c
+ rf-tag LOW
+ site-tag ST_POD1_Building_43167_0
+trapflags ap crash
+trapflags ap noradiocards
+trapflags ap register
+netconf-yang
+end

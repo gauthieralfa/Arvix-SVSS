@@ -1,6 +1,8 @@
 import socket
 import time
 import threading
+import psutil
+import os
 import csv
 import hashlib
 import rsa
@@ -88,6 +90,9 @@ class ClientThread(threading.Thread):
 
 
     def AT_Contract(self):
+        process = psutil.Process(os.getpid())
+        cpu_usage_before = process.cpu_percent(interval=1)
+        memory_info_before = process.memory_info()
         global dict
         print("AT_Contract_Function")
         num_session = receiveint(self)
@@ -134,6 +139,14 @@ class ClientThread(threading.Thread):
         send_bytes_with_length(sock2,Sigma_AT_SUB_ACK)
         send_bytes_with_length(sock2,h_BD_uc_uo.encode())
         print("HASH SENT")
+        cpu_usage_after = process.cpu_percent(interval=1)
+        memory_info_after = process.memory_info()
+    
+        cpu_usage_change = cpu_usage_after - cpu_usage_before
+        memory_usage_change = (memory_info_after.rss - memory_info_before.rss) / (1024 * 1024)
+
+        print(f"Changement d'utilisation du CPU: {cpu_usage_change}%")
+        print(f"Changement d'utilisation de la mémoire: {memory_usage_change:.2f} MB")
         print("END of STEP 1/3")
 
 
@@ -147,9 +160,16 @@ class ClientThread(threading.Thread):
         print("challenge received : "+challenge_uc)
         ID_UC=receivestring(self)
         hContractBD=receivestring(self)
-        cert_uc_bytes=self.clientsocket.recv(4096)
-        certificate=crypto.load_certificate(crypto.FILETYPE_PEM,cert_uc_bytes.decode())
-
+        ##
+        #OLD WAY (only work locally ---- To delete soon)
+        #cert_uc_bytes=self.clientsocket.recv(4096)
+        #certificate=crypto.load_certificate(crypto.FILETYPE_PEM,cert_uc_bytes.decode())
+        ##
+        
+        cert_uc_str=receivestring(self)
+        #cert_uc_bytes=self.clientsocket.recv(4096)
+        #print(cert_uc_bytes.decode())
+        certificate=crypto.load_certificate(crypto.FILETYPE_PEM,cert_uc_str)
         res=verifsign(certificate,Sigma_CR_AC_REQ,challenge_uc+"\n"+ID_UC+"\n"+hContractBD);  
         print("Signature challenge checked")
         Contract_BD=dict[int(ID_UC)]["Contract_BD"] #Getting Contract_BD received by the SP

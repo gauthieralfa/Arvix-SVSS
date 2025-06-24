@@ -208,7 +208,7 @@ class ClientThread(threading.Thread):
         print("\n\n--- time of Step A1 to A4 ---: %s" % (time.time() - self.start_time_A1))
         dict[num_session]["TIME"] = time.time() - self.start_time_A1
 
-        with open('file_time.csv', mode='a', newline='') as fichier_csv:
+        with open('file_time_step1.csv', mode='a', newline='') as fichier_csv:
             writer = csv.writer(fichier_csv)
             writer.writerow([num_session,time.time() - self.start_time_A1])
         print("END OF STEP 1/3")
@@ -241,7 +241,7 @@ class ClientThread(threading.Thread):
         print("all files sent")
         activity_phase2=receivestring(self)
         print("Activity_time is: "+str(activity_phase2))
-        with open('file_time2.csv', mode='a', newline='') as fichier_csv:
+        with open('file_time_step2.csv', mode='a', newline='') as fichier_csv:
             writer = csv.writer(fichier_csv)
             writer.writerow([num_session,activity_phase2])
         print("END OF STEP 2/3")
